@@ -1,9 +1,9 @@
 
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_vulkan.h"
-#include "imgui/imgui_internal.h"
-#include "src/AppImGuiCore.cpp"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_vulkan.h"
+#include "imgui_internal.h"
+#include "AppImGuiCore.cpp"
 #include <stdio.h>          // printf, fprintf
 #include <stdlib.h>         // abort
 #define GLFW_INCLUDE_NONE
@@ -567,8 +567,8 @@ int main(int, char**)
     //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != NULL);
-    ImFont* pFont = io.Fonts->AddFontFromFileTTF("/usr/share/fonts/TTF/Hack-Regular.ttf", 16.0f);
-	io.FontDefault = io.Fonts->Fonts.back();
+    //ImFont* pFont = io.Fonts->AddFontFromFileTTF("/usr/share/fonts/TTF/Hack-Regular.ttf", 16.0f);
+	//io.FontDefault = io.Fonts->Fonts.back();
     // Upload Fonts
     {
         // Use any command queue
@@ -721,7 +721,7 @@ int main(int, char**)
             // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
             ImGui::Text("Hello from another window!");
             AppImGuiCore core;
-            int n = core.nombres[0].length();
+            /*int n = core.nombres[0].length();
             char char_array[n + 1];
             strcpy(char_array, core.nombres[0].c_str());
             ImGui::Text("munu %s", char_array);
@@ -730,7 +730,7 @@ int main(int, char**)
             char char_array2[n + 1];
             strcpy(char_array2, core.nombres[1].c_str());
             ImGui::Text("munu %s", char_array2);
-
+            */
 
         ImGui::End();
         
