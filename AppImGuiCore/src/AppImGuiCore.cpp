@@ -1,10 +1,16 @@
 #include <string>
-#include <iostream>
+#ifdef __linux__
 #include <dlfcn.h>
+#else
+#include <Windows.h>
+#endif // __linux__
+
+
 #include <array>
 #include <map>
 #include <memory>
-#include "src/IOCContainer.cpp"
+#include <iostream>
+#include "IOCContainer.cpp"
 
 typedef std::string (*double_ptr)();
 
@@ -82,14 +88,15 @@ AppImGuiCore::AppImGuiCore(/* args */)
     double_ptr GetName;
     void *handle;
     // open the *.so
+#ifdef __linux__
     handle = dlopen ("./libMCore.so", RTLD_LAZY);
     if (!handle) {
-        fputs (dlerror(), stderr);
+        fputs(dlerror(), stderr);
         exit(1);
     }
     // get the function address and make it ready for use
     GetName = (double_ptr)dlsym(handle, "Name");
-    if ((error = dlerror()) != NULL)  {
+    if ((error = dlerror()) != NULL) {
         fputs(error, stderr);
         exit(1);
     }
@@ -99,14 +106,14 @@ AppImGuiCore::AppImGuiCore(/* args */)
     dlclose(handle);
 
     // open the *.so
-    handle = dlopen ("./libMContracts.so", RTLD_LAZY);
+    handle = dlopen("./libMContracts.so", RTLD_LAZY);
     if (!handle) {
-        fputs (dlerror(), stderr);
+        fputs(dlerror(), stderr);
         exit(1);
     }
     // get the function address and make it ready for use
     GetName = (double_ptr)dlsym(handle, "Name");
-    if ((error = dlerror()) != NULL)  {
+    if ((error = dlerror()) != NULL) {
         fputs(error, stderr);
         exit(1);
     }
@@ -114,6 +121,24 @@ AppImGuiCore::AppImGuiCore(/* args */)
     nombres[1] = (*GetName)();
     // remember to free the resource
     dlclose(handle);
+#else
+    typedef std::string(__stdcall* f_funci)();
+    HINSTANCE hGetProcIDDLL = LoadLibraryA("MCore.dll");
+    if (!hGetProcIDDLL) {
+        std::cout << "could not load the dynamic library" << std::endl;
+        //return EXIT_FAILURE;
+    }
+    f_funci funci = (f_funci)GetProcAddress(hGetProcIDDLL, "Name");
+    if (!funci) {
+        std::cout << "could not locate the function" << std::endl;
+        //return EXIT_FAILURE;
+    }
+    //std::cout << "funci() returned " << funci() << std::endl;
+#endif // __linux__
+
+
+
+    
 
     IOCContainer gContainer;
     gContainer.RegisterInstance<IAmAThing, TheThing>();

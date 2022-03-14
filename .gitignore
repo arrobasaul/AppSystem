@@ -36,3 +36,8 @@ build/
 *.code-*
 #files
 bin/
+bin-int/
+
+*.vcxproj*
+*.sln
+.vs/
