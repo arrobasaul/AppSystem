@@ -3,13 +3,14 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_vulkan.h"
 #include "imgui_internal.h"
-#include "AppImGuiCore.cpp"
+#include "ServiceManager/ServiceManager.h"
 #include <stdio.h>          // printf, fprintf
 #include <stdlib.h>         // abort
 #define GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
+#include <string>
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
@@ -720,9 +721,18 @@ int main(int, char**)
         ImGui::Begin("Menu");
             // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
             ImGui::Text("Hello from another window!");
-            AppImGuiCore core;
+
+            AppSystem::ServiceManager serviceManager;
+            //printf(serviceManager);
+            std::string modulo = "libMCore.so";
+            auto intance = serviceManager.loadModule("libMCore.so");
+            printf("esto es: %s", intance.info->name);
+            //AppSystem::Service_t app = serviceManager.loadModule("bibMcore.so");
             /*int n = core.nombres[0].length();
             char char_array[n + 1];
+
+
+
             strcpy(char_array, core.nombres[0].c_str());
             ImGui::Text("munu %s", char_array);
 

@@ -88,7 +88,7 @@ AppImGuiCore::AppImGuiCore(/* args */)
     double_ptr GetName;
     void *handle;
     // open the *.so
-#ifdef __linux__
+#ifndef _WIN32
     handle = dlopen ("./libMCore.so", RTLD_LAZY);
     if (!handle) {
         fputs(dlerror(), stderr);
@@ -134,12 +134,7 @@ AppImGuiCore::AppImGuiCore(/* args */)
         //return EXIT_FAILURE;
     }
     //std::cout << "funci() returned " << funci() << std::endl;
-#endif // __linux__
-
-
-
-    
-
+#endif // _WIN32
     IOCContainer gContainer;
     gContainer.RegisterInstance<IAmAThing, TheThing>();
     gContainer.RegisterFactory<IAmTheOtherThing, TheOtherThing, IAmAThing>();
