@@ -1,10 +1,10 @@
 file(GLOB sources *.cpp)
 # Dear ImGui
 set(IMGUI_DIR ../vendor/imgui)
-include_directories(${IMGUI_DIR} ..)
-
-include_directories(${CMAKE_SOURCE_DIR}/AppImGuiCore) # include files from AppImGuiCore
-include_directories(${CMAKE_SOURCE_DIR}/vendor)
+include_directories(${IMGUI_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/AppImGuiShell/src)
+include_directories(${CMAKE_SOURCE_DIR}/MContracts/src) # include files from AppImGuiCore
+include_directories(${CMAKE_SOURCE_DIR}/vendor/imgui)
 
 
 
@@ -39,7 +39,7 @@ set(LIBRARIES "glfw;Vulkan::Vulkan")
 include_directories(${GLFW_DIR}/deps)
 
 
-add_executable(AppImGuiShell ${sources} src/main.cpp ${IMGUI_DIR}/imgui_impl_glfw.cpp ${IMGUI_DIR}/imgui_impl_vulkan.cpp ${IMGUI_DIR}/imgui.cpp ${IMGUI_DIR}/imgui_draw.cpp ${IMGUI_DIR}/imgui_tables.cpp ${IMGUI_DIR}/imgui_widgets.cpp )
-target_link_libraries(AppImGuiShell AppImGuiCore ${LIBRARIES})
+add_executable(AppImGuiShell ${sources} src/ServiceManager/ServiceManager.cpp src/main.cpp ${IMGUI_DIR}/imgui_impl_glfw.cpp ${IMGUI_DIR}/imgui_impl_vulkan.cpp ${IMGUI_DIR}/imgui.cpp ${IMGUI_DIR}/imgui_draw.cpp ${IMGUI_DIR}/imgui_tables.cpp ${IMGUI_DIR}/imgui_widgets.cpp )
+target_link_libraries(AppImGuiShell MContracts ${LIBRARIES})
 target_compile_definitions(AppImGuiShell PUBLIC -DImTextureID=ImU64)
 install(TARGETS AppImGuiShell RUNTIME DESTINATION bin)
