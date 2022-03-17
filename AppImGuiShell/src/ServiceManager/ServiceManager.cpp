@@ -1,7 +1,8 @@
 #include "ServiceManager.h"
+//#include "../../../MContracts/src/Base.h"
+//#include "../../../MContracts/src/VisualService/VisualService.h"
 #include "Base.h"
 #include "VisualService/VisualService.h"
-
 #include <filesystem>
 
 namespace AppSystem {
@@ -25,10 +26,10 @@ namespace AppSystem {
         mod.handle = NULL;
         return mod;
     }
-    mod.info = (ServiceInfo_t*)GetProcAddress(mod.handle, "_INFO_");
+    mod.info = (AppSystem::ServiceInfo_t*)GetProcAddress(mod.handle, "_INFO_");
     mod.init = (void (*)())GetProcAddress(mod.handle, "_INIT_");
-    mod.createInstance = (Instance * (*)(std::string)) GetProcAddress(mod.handle, "_CREATE_INSTANCE_");
-    mod.deleteInstance = (void (*)(Instance*))GetProcAddress(mod.handle, "_DELETE_INSTANCE_");
+    mod.createInstance = (AppSystem::Service * (*)(std::string)) GetProcAddress(mod.handle, "_CREATE_INSTANCE_");
+    mod.deleteInstance = (void (*)(AppSystem::Service*))GetProcAddress(mod.handle, "_DELETE_INSTANCE_");
     mod.end = (void (*)())GetProcAddress(mod.handle, "_END_");
 #else
     mod.handle = dlopen(path.c_str(), RTLD_LAZY | RTLD_LOCAL);

@@ -725,7 +725,7 @@ int main(int, char**)
             AppSystem::ServiceManager serviceManager;
             //printf(serviceManager);
             std::string modulo = "libMCore.so";
-            auto intance = serviceManager.loadModule("libMCore.so");
+            auto intance = serviceManager.loadModule("G:/Saul DOC/Code/c++/AppSystem/bin/Debug-windows-x86_64/AppImGuiShell/MCore.dll");
             printf("esto es: %s", intance.info->name);
             //AppSystem::Service_t app = serviceManager.loadModule("bibMcore.so");
             /*int n = core.nombres[0].length();

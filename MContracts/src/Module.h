@@ -3,10 +3,21 @@
 
 #include "Service.h"
 #include <string>
+#ifdef _WIN32
+    #include <Windows.h>
+    #ifdef _WINDLL
+    #define DLL_PORT __declspec(dllexport)
+    #else
+    #define DLL_PORT __declspec(dllimport)
+#endif
+#else
+    #define DLL_PORT
+#endif
+
 
 namespace AppSystem { 
     
-    struct ServiceInfo_t {
+    struct DLL_PORT ServiceInfo_t {
         const char* name;
         const char* description;
         const char* author;
@@ -15,7 +26,7 @@ namespace AppSystem {
         const int versionBuild;
         const int maxInstances;
     };
-    struct Service_t {   
+    struct DLL_PORT Service_t {
 #ifdef _WIN32
         HMODULE handle;
 #else
@@ -37,7 +48,7 @@ namespace AppSystem {
             return true;
         }
     };
-    struct Instance_t {
+    struct DLL_PORT Instance_t {
         AppSystem::Service_t module;
         AppSystem::Service* instance;
     };
