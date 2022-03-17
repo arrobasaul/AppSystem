@@ -1,7 +1,13 @@
 //#include "Module.h"
 #include "Utils/Event.h"
-#include "Module.h"
 #include <map>
+
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+
+#include "Module.h"
+//#include "../../../MContracts/src/Module.h"
 namespace AppSystem {
 
     class ServiceManager

@@ -19,7 +19,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"] = "vendor/GLFW/include"
-IncludeDir["AppImGuiCore"] = "AppImGuiCore/src"
+IncludeDir["MContracts"] = "MContracts/src"
 
 group "Dependencies"
 	include "vendor/GLFW"
@@ -43,8 +43,12 @@ project "MCore"
 	includedirs
 	{
 		"%{prj.name}/src",
+		"%{IncludeDir.MContracts}"
 	}
-
+	libdirs
+	{
+		"MContracts"
+	}
 	filter "system:windows"
 		cppdialect "C++20"
         staticruntime "On"
@@ -184,11 +188,12 @@ project "AppImGuiShell"
 		"vendor/imgui",
 		"vendor/GLFW/include",
 		"C:/VulkanSDK/1.3.204.1/Include",
-		"%{IncludeDir.AppImGuiCore}"
+		"%{prj.name}/src",
+		"MContracts/src"
 	}
 	libdirs
 	{
-		"AppImGuiCore",
+		"MContracts",
 		"vendor/GLFW/bin/Debug-windows-x86_64/GLFW",
 		"C:/VulkanSDK/1.3.204.1/Lib"
 	}

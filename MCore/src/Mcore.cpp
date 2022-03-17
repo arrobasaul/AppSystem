@@ -63,7 +63,7 @@ private:
 
 MOD_EXPORT void _INIT_() {
     // Nothing here
-    printf("You are in inside Mcore");
+    printf("You are in inside Mcore on win\n");
 }
 
 MOD_EXPORT AppSystem::Service* _CREATE_INSTANCE_(std::string name) {
