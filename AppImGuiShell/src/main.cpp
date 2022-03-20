@@ -10,7 +10,10 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
+#include <iostream>
 #include <string>
+#include <cstring>
+#include <map>
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
@@ -603,7 +606,15 @@ int main(int, char**)
     // Our state
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    AppSystem::ServiceManager serviceManager;
+    std::string modulo = "libMCore.so";
+    auto intance = serviceManager.loadModule(modulo);
+    printf("esto es: %s", intance.info->name);
+    auto intance2 = serviceManager.loadModule("libMCore2.so");
+    printf("esto es: %s", intance2.info->name);
 
+    
+    
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
@@ -720,13 +731,20 @@ int main(int, char**)
         // 3. Show another simple window.
         ImGui::Begin("Menu");
             // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            ImGui::Text("Hello from another window!");
+            //ImGui::Text("Hello from another window!");
+            auto modules = serviceManager.modules;
+            for (const auto& [key, value] : modules) {
+                ImGui::Button(key.c_str());
+                //std::cout << "["  << key << "]\n" << std::endl;
+            }
+            //auto iter =  modules.begin();
 
-            AppSystem::ServiceManager serviceManager;
+            //while (iter != modules.end())
+            //{
+                //ImGui::Text(iter->first.c_str());
+            //}
             //printf(serviceManager);
-            std::string modulo = "libMCore.so";
-            auto intance = serviceManager.loadModule("G:/Saul DOC/Code/c++/AppSystem/bin/Debug-windows-x86_64/AppImGuiShell/MCore.dll");
-            printf("esto es: %s", intance.info->name);
+            
             //AppSystem::Service_t app = serviceManager.loadModule("bibMcore.so");
             /*int n = core.nombres[0].length();
             char char_array[n + 1];

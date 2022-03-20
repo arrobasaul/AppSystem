@@ -1,5 +1,6 @@
 #include <vector>
 #include <algorithm>
+
 template <class T>
 struct EventHandler {
     EventHandler() {}
@@ -35,7 +36,7 @@ public:
         }
         handlers.erase(std::remove(handlers.begin(), handlers.end(), handler), handlers.end());
     }
-    
+
 private:
     std::vector<EventHandler<T>*> handlers;
 };
