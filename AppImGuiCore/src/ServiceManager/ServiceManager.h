@@ -1,20 +1,25 @@
-//#include "Module.h"
-#include "../Utils/Event.h"
-#include "Module.h"
+#include "Utils/Event.h"
 #include <map>
 
-namespace AppSystem {
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+
+//#include "Module.h"
+#include "../../../MContracts/src/Module.h"
+namespace AppSystem
+{
 
     class ServiceManager
     {
     private:
         /* data */
     public:
-        //AppSystem::Service_t loadModule(std::string path);
+        AppSystem::Service_t loadModule(std::string path);
 
         int createInstance(std::string name, std::string module);
         int deleteInstance(std::string name);
-        int deleteInstance(AppSystem::Service* instance);
+        int deleteInstance(AppSystem::Service *instance);
 
         int enableInstance(std::string name);
         int disableInstance(std::string name);
@@ -32,6 +37,8 @@ namespace AppSystem {
 
         std::map<std::string, AppSystem::Service_t> modules;
         std::map<std::string, AppSystem::Instance_t> instances;
+        ServiceManager(/* args */);
+        ~ServiceManager() = default;
     };
-    
+
 }
