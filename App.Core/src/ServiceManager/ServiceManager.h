@@ -14,9 +14,9 @@ namespace AppSystem
     {
     private:
         /* data */
-    public:
         AppSystem::Service_t loadModule(std::string path);
 
+    public:
         int createInstance(std::string name, std::string module);
         int deleteInstance(std::string name);
         int deleteInstance(AppSystem::Service *instance);

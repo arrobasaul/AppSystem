@@ -3,15 +3,14 @@
 //#include "../../../MContracts/src/VisualService/VisualService.h"
 #include "Base.h"
 #include "VisualService/VisualService.h"
-#include <filesystem>
 #include <iostream>
-
+#include <filesystem>
+#include <dirent.h>
 namespace AppSystem
 {
 
     AppSystem::Service_t ServiceManager::loadModule(std::string path)
     {
-        std::cout << "loadModule" << std::endl;
         AppSystem::Service_t mod;
         if (!std::filesystem::exists(path))
         {
@@ -47,8 +46,9 @@ namespace AppSystem
             return mod;
         }
         mod.info = (AppSystem::ServiceInfo_t *)dlsym(mod.handle, "_INFO_");
+        mod.metadata = (AppSystem::ServiceMetadata_t *)dlsym(mod.handle, "_MATADATA_");
         mod.init = (void (*)())dlsym(mod.handle, "_INIT_");
-        mod.createInstance = (AppSystem::Service * (*)(std::string)) dlsym(mod.handle, "_CREATE_INSTANCE_");
+        mod.createInstance = (AppSystem::Service * (*)(std::string)) dlsym(mod.handle, "_CREATE_LAYER_");
         mod.deleteInstance = (void (*)(AppSystem::Service *))dlsym(mod.handle, "_DELETE_INSTANCE_");
         mod.end = (void (*)())dlsym(mod.handle, "_END_");
 #endif
@@ -233,11 +233,10 @@ namespace AppSystem
     ServiceManager::ServiceManager()
     {
         std::string path = "modules";
-        std::cout << path << std::endl;
+
         for (const auto &file : std::filesystem::recursive_directory_iterator(path))
         {
             auto nFile = file.path().string();
-            std::cout << nFile << std::endl;
             if (nFile.find(APP_MOD_EXTENTSION) != std::string::npos)
             {
                 loadModule(nFile);

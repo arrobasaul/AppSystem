@@ -33,11 +33,15 @@
 
 .vscode/
 build/
+build2/
 *.code-*
 #files
 bin/
 bin-int/
-
+vcpkg/
 *.vcxproj*
 *.sln
 .vs/
+out/
+run/
+.cache/

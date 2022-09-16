@@ -1,0 +1,2 @@
+#define AppImGuiShell_VERSION_MAJOR @AppImGuiShell_VERSION_MAJOR @
+#define AppImGuiShell_VERSION_MINOR @AppImGuiShell_VERSION_MINOR @
