@@ -3,6 +3,7 @@ project(AppImGuiShell VERSION 1.0)
 include_directories(${CMAKE_SOURCE_DIR}/AppImGuiShell/src)
 include_directories(${CMAKE_SOURCE_DIR}/AppImGuiCore/src) # include files from AppImGuiCore
 include_directories(${CMAKE_SOURCE_DIR}/App.GuiFront/include)
+include_directories(${CMAKE_SOURCE_DIR}/vendor/glm)
 include_directories(${CMAKE_SOURCE_DIR}/MContracts/src)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -34,7 +35,24 @@ target_link_directories(AppImGuiShell
     PRIVATE ${CMAKE_SOURCE_DIR}/out/release/vendor/glfw/src
 )
 
-target_link_libraries(AppImGuiShell AppImGuiCore glfw3 ${LIBRARIES})
+target_link_libraries(AppImGuiShell AppImGuiCore App.GuiFront glfw3 glm ${LIBRARIES})
 
 target_compile_definitions(AppImGuiShell PUBLIC -DImTextureID=ImU64)
 install(TARGETS AppImGuiShell RUNTIME DESTINATION bin)
+
+set (dist_gem_name modules) 
+add_custom_command(TARGET AppImGuiShell POST_BUILD        # Adds a post-build event to MyTest
+    COMMAND ${CMAKE_COMMAND} -E # Create a working directory. 
+        make_directory ${dist_gem_name}
+    COMMAND ${CMAKE_COMMAND} -E 
+        copy_if_different ${CMAKE_SOURCE_DIR}/out/build/Modules/MNetWork/libMNetwork.so ${dist_gem_name}
+)
+
+#add_custom_target (libMNetwork
+ #   COMMAND ${CMAKE_COMMAND} -E # Create a working directory. 
+  #      make_directory ${dist_gem_name} COMMAND ${CMAKE_COMMAND} -E # copy">copy a build system in there. 
+    #copy ${CMAKE_SOURCE_DIR}/CMakeLists-gem.txt ${dist_gem_name} COMMAND ${CMAKE_COMMAND} -E # Copy the source file">file. copy ${CMAKE_SOURCE_DIR}/bindings/ruby/rubyRUBY_wrap.cxx ${dist_gem_name} COMMAND ${CMAKE_COMMAND} -E # Copy the directory with header files. copy_directory ${CMAKE_SOURCE_DIR}/include ${dist_gem_name} COMMAND ${CMAKE_COMMAND} -E # Create a distribution archive. tar czf ${dist_gem_name}.tgz ${dist_gem_name} COMMAND ${CMAKE_COMMAND} -E # Dispose of our directory. remove_directory ${dist_gem_name} DEPENDS ${CMAKE_SOURCE_DIR}/bindings/ruby/rubyRUBY_wrap.cxx 
+   # COMMAND ${CMAKE_COMMAND} -E 
+    #    copy ${CMAKE_SOURCE_DIR}/out/build/Modules/MNetWork/libMNetwork.so ${dist_gem_name}
+    #WORKING_DIR ${CMAKE_BINARY_DIR})
+    
