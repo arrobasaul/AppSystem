@@ -13,6 +13,7 @@ option(GLFW_INSTALL "Generate installation target" OFF)
 option(GLFW_DOCUMENT_INTERNALS "Include internals in documentation" OFF)
 
 add_subdirectory(vendor/glfw)
+add_subdirectory(vendor/glm)
 
 
 
@@ -20,7 +21,7 @@ add_subdirectory(vendor/glfw)
 add_subdirectory(MContracts)
 add_subdirectory(App.GuiFront)
 add_subdirectory(AppImGuiCore)
-add_subdirectory(AppImGuiShell)
 add_subdirectory(Modules/MNetWork)
+add_subdirectory(AppImGuiShell)
 # add_subdirectory(MCore)
 # add_subdirectory(MCore2)
