@@ -1,0 +1,17 @@
+#find_package( 
+ #   Boost 1.79 REQUIRED 
+  #  COMPONENTS  json 
+#)
+add_library(RayTracing SHARED src/RayTracing.cpp)
+include_directories(${CMAKE_SOURCE_DIR}/MContracts/src)
+include_directories(${CMAKE_SOURCE_DIR}/App.GuiFront/include)
+include_directories(${CMAKE_SOURCE_DIR}/vendor/glm)
+include_directories(${CMAKE_SOURCE_DIR}/vendor/irrKlang/include)
+
+#add_library( IrrKlang SHARED IMPORTED GLOBAL)
+#set_target_properties( IrrKlang PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/vendor/irrKlang/bin/linux-gcc-64/libIrrKlang.so )
+
+target_link_libraries(RayTracing MContracts IrrKlang)
+install(TARGETS RayTracing
+    LIBRARY DESTINATION bin/modules
+    ARCHIVE DESTINATION bin/modules)

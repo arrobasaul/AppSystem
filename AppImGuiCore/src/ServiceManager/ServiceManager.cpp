@@ -42,7 +42,9 @@ namespace AppSystem
         mod.handle = dlopen(path.c_str(), RTLD_LAZY | RTLD_LOCAL);
         if (mod.handle == NULL)
         {
-            // spdlog::error("Couldn't load {0}.", path);
+            //spdlog::error("Couldn't load {0}.", path);
+        std::cout << "Couldn't load " << path << std::endl;
+
             mod.handle = NULL;
             return mod;
         }

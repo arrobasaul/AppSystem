@@ -1,10 +1,11 @@
-file(GLOB sources *.cpp)
+file(GLOB sources src/core/*.cpp src/core/systems/*.cpp)
 project(AppImGuiShell VERSION 1.0) 
 include_directories(${CMAKE_SOURCE_DIR}/AppImGuiShell/src)
 include_directories(${CMAKE_SOURCE_DIR}/AppImGuiCore/src) # include files from AppImGuiCore
 include_directories(${CMAKE_SOURCE_DIR}/App.GuiFront/include)
 include_directories(${CMAKE_SOURCE_DIR}/vendor/glm)
 include_directories(${CMAKE_SOURCE_DIR}/MContracts/src)
+include_directories(${CMAKE_SOURCE_DIR}/vendor/glfw/include)
 
 if(NOT CMAKE_BUILD_TYPE)
 set(CMAKE_BUILD_TYPE Debug CACHE STRING "" FORCE)
@@ -23,19 +24,23 @@ set(LIBRARIES "Vulkan::Vulkan")
 message(STATUS "Vulkan: ${Vulkan_FOUND}")
 # Use vulkan headers from glfw:
 
-add_executable(AppImGuiShell ${sources} src/AppImGuiShell.cpp src/Application.cpp src/Image.cpp  src/Random.cpp src/Timer.h src/Input/Input.cpp  src/Input/KeyCodes.h)
+add_executable(AppImGuiShell ${sources} src/AppImGuiShell.cpp src/Application.cpp src/Input/Input.cpp src/Image.cpp src/Random.h src/Timer.h src/Image.h src/Input/KeyCodes.h)
+
 
 target_include_directories(AppImGuiShell 
-    PUBLIC vendor/glfw/deps
-    PUBLIC vendor/glfw/include
-    PUBLIC ${PROJECT_BINARY_DIR}
+PUBLIC vendor/glfw/deps
+PUBLIC vendor/glfw/include
+PUBLIC ${PROJECT_BINARY_DIR}
 )
 
 target_link_directories(AppImGuiShell 
-    PRIVATE ${CMAKE_SOURCE_DIR}/out/release/vendor/glfw/src
+PRIVATE ${CMAKE_SOURCE_DIR}/out/release/vendor/glfw/src
 )
 
-target_link_libraries(AppImGuiShell AppImGuiCore App.GuiFront glfw3 glm ${LIBRARIES})
+target_link_libraries(AppImGuiShell AppImGuiCore App.GuiFront glfw glm IrrKlang ${LIBRARIES})
+
+add_library( IrrKlang SHARED IMPORTED GLOBAL)
+set_target_properties( IrrKlang PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/vendor/irrKlang/bin/linux-gcc-64/libIrrKlang.so )
 
 target_compile_definitions(AppImGuiShell PUBLIC -DImTextureID=ImU64)
 install(TARGETS AppImGuiShell RUNTIME DESTINATION bin)
@@ -45,7 +50,13 @@ add_custom_command(TARGET AppImGuiShell POST_BUILD        # Adds a post-build ev
     COMMAND ${CMAKE_COMMAND} -E # Create a working directory. 
         make_directory ${dist_gem_name}
     COMMAND ${CMAKE_COMMAND} -E 
-        copy_if_different ${CMAKE_SOURCE_DIR}/out/build/Modules/MNetWork/libMNetwork.so ${dist_gem_name}
+        copy ${CMAKE_SOURCE_DIR}/out/build/Modules/MNetWork/libMNetwork.so ${dist_gem_name}
+)
+add_custom_command(TARGET AppImGuiShell POST_BUILD        # Adds a post-build event to MyTest
+    COMMAND ${CMAKE_COMMAND} -E # Create a working directory. 
+        make_directory ${dist_gem_name}
+    COMMAND ${CMAKE_COMMAND} -E 
+        copy ${CMAKE_SOURCE_DIR}/out/build/Modules/RayTracing/libRayTracing.so ${dist_gem_name}
 )
 
 #add_custom_target (libMNetwork

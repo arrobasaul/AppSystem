@@ -11,12 +11,9 @@
 #include <boost/beast/http/type_traits.hpp>
 #include <boost/beast/version.hpp>
 #include <boost/json.hpp>*/
-#include <cstdlib>
 #include <functional>
-#include <iostream>
-#include <memory>
-#include <string>
 #include <thread>
+#include "CoreRuntime.hpp"
 /*
 namespace beast = boost::beast; // from <boost/beast.hpp>
 namespace http = beast::http;   // from <boost/beast/http.hpp>
@@ -208,6 +205,11 @@ public:
 
   bool isEnabled() { return enabled; }
   virtual void OnUIRender() override {
+
+    
+
+
+
     ImGui::Begin("Hello from network");
     static char _host[128];
     static char _port[128];
@@ -244,22 +246,32 @@ public:
 */
     }
     ImGui::End();
-    // ImGui::ShowDemoWindow();
+
+    
   }
+  
 
 private:
   static void menuHandler(void *ctx) {
     MNetwork *_this = (MNetwork *)ctx;
     // ImGui::Text("Hello SDR++, my name is %s", _this->name.c_str());
   }
-
+  
   std::string name;
   bool enabled = true;
 };
 
 MOD_EXPORT void _INIT_() {
-  // Nothing here
-  printf("You are in inside Mcore2 on win\n");
+    // Nothing here
+    std::coroutine_handle<ReturnObject3::promise_type> h = counter3();
+    ReturnObject3::promise_type &promise = h.promise();
+    for (int i = 0; i < 3; ++i) {
+      std::cout << "counter3: " << promise.value_ << std::endl;
+      h();
+    }
+    h.destroy();
+
+    printf("You are in inside Mcore2 on win\n");
 }
 
 MOD_EXPORT AppSystem::Service *_CREATE_INSTANCE_(std::string name) {

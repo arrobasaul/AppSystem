@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.2.2)
-
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -std=c++20 -fcoroutines")
 project(globalProject)
 
 
@@ -22,6 +24,7 @@ add_subdirectory(MContracts)
 add_subdirectory(App.GuiFront)
 add_subdirectory(AppImGuiCore)
 add_subdirectory(Modules/MNetWork)
+add_subdirectory(Modules/RayTracing)
 add_subdirectory(AppImGuiShell)
 # add_subdirectory(MCore)
 # add_subdirectory(MCore2)

@@ -2,4 +2,4 @@
 
 cmake -S . -B out/build ;
 cd out/build ; 
-cmake --build .
+make -j4

@@ -5,6 +5,9 @@
 #include <dirent.h>
 #include <dlfcn.h>
 #include <iostream>
+#include "Image.h"
+#include "Timer.h"
+#include "Random.h"
 
 //#include "Config.h"
 
@@ -12,13 +15,42 @@ bool g_ApplicationRunning = true;
 
 class ExampleLayer : public AppSystem::Service {
 public:
+  
   bool enabled;
+
   virtual void OnUIRender() override {
-    ImGui::Begin("Hello");
-    ImGui::Button("Button");
+    ImGui::Begin("Play Render");
+    ImGui::Text("Last render:  %.3fms",m_lastRenderTime);
+      if(ImGui::Button("Play")){
+        Render();
+      }
     ImGui::End();
 
-    ImGui::ShowDemoWindow();
+    //ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f,0.0f));
+    ImGui::Begin("ViewPort");
+      m_ViewportW = ImGui::GetContentRegionAvail().x;
+      m_ViewportH = ImGui::GetContentRegionAvail().y;
+      if(m_Image){
+        //auto img = (ImTextureID)m_Image->GetDescriptorSet();
+        //ImGui::Image(img, ImVec2( (float) m_Image->GetWidth(), (float) m_Image->GetHeight() ));
+      }
+    ImGui::End();
+
+    //ImGui::ShowDemoWindow();
+  }
+  void Render(){
+    AppSystem::Timer timer;
+    if (!m_Image || m_ViewportW != m_Image->GetWidth() || m_ViewportH != m_Image->GetHeight()){
+      m_Image = std::make_shared<AppSystem::Image>(m_ViewportW,m_ViewportH, AppSystem::ImageFormat::RGBA);
+      delete[] m_ImageData;
+      m_ImageData = new uint32_t[ m_ViewportW * m_ViewportH ];
+    }
+    for (uint32_t i = 0; i < m_ViewportW * m_ViewportH; i++ ){
+      //m_ImageData[i] = AppSystem::Random::UInt();
+      m_ImageData[i] = 0xffff00ff;
+    } 
+    m_lastRenderTime = timer.ElapsedMillis();
+    // ImGui::ShowDemoWindow();
   }
   void postInit() {}
 
@@ -27,6 +59,11 @@ public:
   void disable() { enabled = false; }
 
   bool isEnabled() { return enabled; }
+private:
+  uint32_t m_ViewportW = 0, m_ViewportH = 0;
+  std::shared_ptr<AppSystem::Image> m_Image;
+  uint32_t* m_ImageData = nullptr;
+  float m_lastRenderTime;
 };
 struct Moder {
   void *handle;
@@ -70,6 +107,7 @@ AppSystem::Application *AppSystem::CreateApplication(int argc, char **argv) {
   });
   return app;
 }
+
 int Main(int argc, char **argv) {
   // std::cout << "Version" << AppImGuiShell_VERSION_MAJOR << "." <<
   // AppImGuiShell_VERSION_MINOR std::endl;
@@ -83,3 +121,4 @@ int Main(int argc, char **argv) {
   return 0;
 }
 int main(int argc, char **argv) { return Main(argc, argv); }
+
