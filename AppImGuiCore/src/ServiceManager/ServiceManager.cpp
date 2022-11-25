@@ -8,20 +8,43 @@
 
 namespace AppSystem
 {
+    static void PrintException( const char *Function, const std::exception &e )
+{
+    std::cout << "Exception in " 
+        << Function << ", " 
+        << e.what() << std::endl;
+}
+class IAmAThing
+{
+public:
+   virtual ~IAmAThing() { }
+   virtual void TestThis() = 0;
+};
 
+class TheThing: public IAmAThing
+{
+public:
+   TheThing()
+   {
+   }
+   void TestThis()
+   {
+      std::cout << "A Thing from TheThing" << std::endl;
+   }
+};
     AppSystem::Service_t ServiceManager::loadModule(std::string path)
     {
         std::cout << "loadModule" << std::endl;
         AppSystem::Service_t mod;
         if (!std::filesystem::exists(path))
         {
-            // spdlog::error("{0} does not exist", path);
+            _logger.error("{0} does not exist", path);
             mod.handle = NULL;
             return mod;
         }
         if (!std::filesystem::is_regular_file(path))
         {
-            // spdlog::error("{0} isn't a loadable module", path);
+            _logger.error("{0} isn't a loadable module", path);
             mod.handle = NULL;
             return mod;
         }
@@ -29,7 +52,7 @@ namespace AppSystem
         mod.handle = LoadLibraryA(path.c_str());
         if (mod.handle == NULL)
         {
-            // spdlog::error("Couldn't load {0}. Error code: {1}", path, GetLastError());
+            _loggererror("Couldn't load {0}. Error code: {1}", path, GetLastError());
             mod.handle = NULL;
             return mod;
         }
@@ -42,51 +65,52 @@ namespace AppSystem
         mod.handle = dlopen(path.c_str(), RTLD_LAZY | RTLD_LOCAL);
         if (mod.handle == NULL)
         {
-            //spdlog::error("Couldn't load {0}.", path);
+            _logger.error("Couldn't load {0}.", path);
         std::cout << "Couldn't load " << path << std::endl;
 
             mod.handle = NULL;
             return mod;
         }
+        
         mod.info = (AppSystem::ServiceInfo_t *)dlsym(mod.handle, "_INFO_");
-        mod.init = (void (*)())dlsym(mod.handle, "_INIT_");
+        mod.init = (void (*)(AppSystem::ioc::container* container))dlsym(mod.handle, "_INIT_");
         mod.createInstance = (AppSystem::Service * (*)(std::string)) dlsym(mod.handle, "_CREATE_INSTANCE_");
         mod.deleteInstance = (void (*)(AppSystem::Service *))dlsym(mod.handle, "_DELETE_INSTANCE_");
         mod.end = (void (*)())dlsym(mod.handle, "_END_");
 #endif
         if (mod.info == NULL)
         {
-            // spdlog::error("{0} is missing _INFO_ symbol", path);
+            _logger.error("{0} is missing _INFO_ symbol", path);
             mod.handle = NULL;
             return mod;
         }
         if (mod.init == NULL)
         {
-            // spdlog::error("{0} is missing _INIT_ symbol", path);
+            _logger.error("{0} is missing _INIT_ symbol", path);
             mod.handle = NULL;
             return mod;
         }
         if (mod.createInstance == NULL)
         {
-            // spdlog::error("{0} is missing _CREATE_INSTANCE_ symbol", path);
+            _logger.error("{0} is missing _CREATE_INSTANCE_ symbol", path);
             mod.handle = NULL;
             return mod;
         }
         if (mod.deleteInstance == NULL)
         {
-            // spdlog::error("{0} is missing _DELETE_INSTANCE_ symbol", path);
+            _logger.error("{0} is missing _DELETE_INSTANCE_ symbol", path);
             mod.handle = NULL;
             return mod;
         }
         if (mod.end == NULL)
         {
-            // spdlog::error("{0} is missing _END_ symbol", path);
+            _logger.error("{0} is missing _END_ symbol", path);
             mod.handle = NULL;
             return mod;
         }
         if (modules.find(mod.info->name) != modules.end())
         {
-            // spdlog::error("{0} has the same name as an already loaded module", path);
+            _logger.error("{0} has the same name as an already loaded module", path);
             mod.handle = NULL;
             return mod;
         }
@@ -97,9 +121,9 @@ namespace AppSystem
                 return _mod;
             }
         }
-        mod.init();
         modules[mod.info->name] = mod;
         createInstance(mod.info->name, mod.info->name);
+        mod.init(Container);
         return mod;
     }
 
@@ -107,18 +131,18 @@ namespace AppSystem
     {
         if (modules.find(module) == modules.end())
         {
-            // spdlog::error("Module '{0}' doesn't exist", module);
+            _logger.error("Module '{0}' doesn't exist", module);
             return -1;
         }
         if (instances.find(name) != instances.end())
         {
-            // spdlog::error("A module instance with the name '{0}' already exists", name);
+            _logger.error("A module instance with the name '{0}' already exists", name);
             return -1;
         }
         int maxCount = modules[module].info->maxInstances;
         if (countModuleInstances(module) >= maxCount && maxCount > 0)
         {
-            // spdlog::error("Maximum number of instances reached for '{0}'", module);
+            _logger.error("Maximum number of instances reached for '{0}'", module);
             return -1;
         }
         AppSystem::Instance_t inst;
@@ -133,7 +157,7 @@ namespace AppSystem
     {
         if (instances.find(name) == instances.end())
         {
-            // spdlog::error("Tried to remove non-existent instance '{0}'", name);
+            _logger.error("Tried to remove non-existent instance '{0}'", name);
             return -1;
         }
         // onInstanceDelete.emit(name);
@@ -146,7 +170,7 @@ namespace AppSystem
 
     int ServiceManager::deleteInstance(AppSystem::Service *instance)
     {
-        // spdlog::error("Delete instance not implemented");
+        _logger.error("Delete instance not implemented");
         return -1;
     }
 
@@ -154,7 +178,7 @@ namespace AppSystem
     {
         if (instances.find(name) == instances.end())
         {
-            // spdlog::error("Cannot enable '{0}', instance doesn't exist", name);
+            _logger.error("Cannot enable '{0}', instance doesn't exist", name);
             return -1;
         }
         /*VisualService* v;
@@ -168,7 +192,7 @@ namespace AppSystem
     {
         if (instances.find(name) == instances.end())
         {
-            // spdlog::error("Cannot disable '{0}', instance doesn't exist", name);
+            _logger.error("Cannot disable '{0}', instance doesn't exist", name);
             return -1;
         }
         instances[name].instance->disable();
@@ -179,7 +203,7 @@ namespace AppSystem
     {
         if (instances.find(name) == instances.end())
         {
-            // spdlog::error("Cannot check if '{0}' is enabled, instance doesn't exist", name);
+            _logger.error("Cannot check if '{0}' is enabled, instance doesn't exist", name);
             return false;
         }
         return instances[name].instance->isEnabled();
@@ -189,7 +213,7 @@ namespace AppSystem
     {
         if (instances.find(name) == instances.end())
         {
-            // spdlog::error("Cannot post-init '{0}', instance doesn't exist", name);
+            _logger.error("Cannot post-init '{0}', instance doesn't exist", name);
             return;
         }
         instances[name].instance->postInit();
@@ -199,7 +223,7 @@ namespace AppSystem
     {
         if (instances.find(name) == instances.end())
         {
-            // spdlog::error("Cannot get module name of'{0}', instance doesn't exist", name);
+            _logger.error("Cannot get module name of'{0}', instance doesn't exist", name);
             return "";
         }
         return std::string(instances[name].module.info->name);
@@ -209,7 +233,7 @@ namespace AppSystem
     {
         if (modules.find(module) == modules.end())
         {
-            // spdlog::error("Cannot count instances of '{0}', Module doesn't exist", module);
+            _logger.error("Cannot count instances of '{0}', Module doesn't exist", module);
             return -1;
         }
         AppSystem::Service_t mod = modules[module];
@@ -228,12 +252,32 @@ namespace AppSystem
     {
         for (auto &[name, inst] : instances)
         {
-            // spdlog::info("Running post-init for {0}", name);
+            _logger.info("Running post-init for {0}", name);
             inst.instance->postInit();
         }
     }
     ServiceManager::ServiceManager()
+    : _logger(createLog()), _container()
     {
+        //_container->RegisterInstance<IAmAThing,TheThing>();
+
+    try
+    {
+        // Register
+        std::cout << "Registering Concretion as Interface" << std::endl;
+        Container->register_type<IAmAThing, TheThing>();
+        // Resolve
+        std::cout << "Resolving Interface" << std::endl;
+        std::shared_ptr<IAmAThing> Value = Container->resolve<IAmAThing>();
+        if( Value.get() )
+        {
+            std::cout << "Successfully resolved Interface" << std::endl;
+        }
+    }
+    catch( const std::exception &e )
+    {
+        PrintException( __func__, e );
+    }
         std::string path = "modules";
         std::cout << path << std::endl;
         for (const auto &file : std::filesystem::recursive_directory_iterator(path))
@@ -247,4 +291,19 @@ namespace AppSystem
             }
         }
     }
+    spdlog::logger ServiceManager::createLog(){
+        auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+        console_sink->set_level(spdlog::level::warn);
+        console_sink->set_pattern("[multi_sink_example] [%^%l%$] %v");
+
+        auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("logs/multisink.txt", true);
+        file_sink->set_level(spdlog::level::trace);
+
+        spdlog::logger _logger = spdlog::logger("multi_sink", {console_sink, file_sink});
+        _logger.set_level(spdlog::level::debug);
+        _logger.warn("this should appear in both console and file");
+        _logger.info("this message should not appear in the console, only in the file");
+        return _logger;
+    }
+
 }

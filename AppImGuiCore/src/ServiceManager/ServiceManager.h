@@ -1,3 +1,4 @@
+#pragma once
 #include "Utils/Event.h"
 #include <map>
 
@@ -7,6 +8,12 @@
 
 //#include "Module.h"
 #include "../../../MContracts/src/Module.h"
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/sinks/basic_file_sink.h"
+#include "IOCContainer.h"
+#include "ioc.h"
+#include "Base.h"
 namespace AppSystem
 {
 
@@ -15,6 +22,9 @@ namespace AppSystem
     private:
         /* data */
     public:
+        spdlog::logger _logger;
+        IOCContainer* _container;
+        AppSystem::ioc::container* Container = new AppSystem::ioc::container();
         AppSystem::Service_t loadModule(std::string path);
 
         int createInstance(std::string name, std::string module);
@@ -37,6 +47,8 @@ namespace AppSystem
 
         std::map<std::string, AppSystem::Service_t> modules;
         std::map<std::string, AppSystem::Instance_t> instances;
+        spdlog::logger createLog();
+
         ServiceManager(/* args */);
         ~ServiceManager() = default;
     };

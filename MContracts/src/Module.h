@@ -2,6 +2,8 @@
 #define _MODULE_H_
 
 #include "Service.h"
+#include "ioc.h"
+
 #include <string>
 #ifdef _WIN32
     #include <Windows.h>
@@ -33,7 +35,7 @@ namespace AppSystem {
         void* handle;
 #endif
         AppSystem::ServiceInfo_t* info;
-        void (*init)();
+        void (*init)( AppSystem::ioc::container* container );
         AppSystem::Service* (*createInstance)(std::string name);
         void (*deleteInstance)(AppSystem::Service* instance);
         void (*end)();

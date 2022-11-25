@@ -1,3 +1,4 @@
+#pragma once
 #include "Base.h"
 #include "Layer.h"
 #include "imgui.h"
@@ -8,7 +9,8 @@
 #include <functional>
 #include <thread>
 
-
+#include "ioc.h"
+#include "MNetwork.h"
 #include <irrKlang.h>
 using namespace irrklang;
 //------------------------------------------------------------------------------
@@ -80,8 +82,15 @@ private:
   std::string name;
 };
 
-MOD_EXPORT void _INIT_() {
-    printf("You are in inside Mcore2 on win\n");
+MOD_EXPORT void _INIT_(AppSystem::ioc::container* container) {
+
+    //int retorno = gContainer->GetObject<IMNetwork>()->sayHello();
+  // Resolve
+    std::cout << "Resolving Interface" << std::endl;
+    std::shared_ptr<IMNetwork> Value = container->resolve<IMNetwork>();
+    int val = Value->sayHello();
+    printf("You are in inside Mcore2 on win fron other \n");
+    printf("val " + val);
 }
 
 MOD_EXPORT AppSystem::Service *_CREATE_INSTANCE_(std::string name) {

@@ -23,4 +23,13 @@
 #endif
 #endif
 
+template<typename Base, typename T>
+inline bool instanceof(const T *ptr) {
+    return dynamic_cast<const Base*>(ptr) != nullptr;
+}
+template<typename Child, typename T>
+inline bool childof(const T *ptr) {
+    return dynamic_cast<const Child*>(ptr) != nullptr;
+}
+
 #define APP_MOD_INFO MOD_EXPORT const AppSystem::ServiceInfo_t _INFO_

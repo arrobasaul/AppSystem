@@ -1,4 +1,6 @@
+#pragma once
 #include "Base.h"
+#include "../include/MNetwork.h"
 #include "Layer.h"
 #include "imgui.h"
 #include <cstdlib>  /* Aquí contiene la función system("pause"); */
@@ -14,6 +16,8 @@
 #include <functional>
 #include <thread>
 #include "CoreRuntime.hpp"
+
+#include "ioc.h"
 /*
 namespace beast = boost::beast; // from <boost/beast.hpp>
 namespace http = beast::http;   // from <boost/beast/http.hpp>
@@ -185,20 +189,46 @@ APP_MOD_INFO{/* Name:            */ "MNetwork",
              1,
              0,
              /* Max instances    */ -1};
+class Person {  
+    public:
+    // ... Person members ...  
+    virtual ~Person() {}  
+};  
 
-class MNetwork : public AppSystem::Service {
+class Employee : public IMNetwork  {  
+    int sayHello() const {
+      printf("Say hello fron Employee\n");
+    return 10;
+  }
+}; 
+
+class MNetwork : public IMNetwork ,  public AppSystem::Service {
 public:
+  MNetwork();
   MNetwork(std::string name) {
     this->name = name;
+    /*Person person;  
+    Employee employee;  
+    Person *ptr = &employee;  
+    int t = 3;  
+
+    std::cout << typeid(t).name() << std::endl;  
+    std::cout << typeid(person).name() << std::endl;   // Person (statically known at compile-time)  
+    std::cout << typeid(employee).name() << std::endl; // Employee (statically known at compile-time)  
+    std::cout << typeid(ptr).name() << std::endl;      // Person * (statically known at compile-time)  
+    std::cout << typeid(*ptr).name() << std::endl;  */
     // gui::menu.registerEntry(name, menuHandler, this, NULL);
   }
 
   ~MNetwork() {
     // gui::menu.removeEntry(name);
   }
-
+int sayHello() const {
+      printf("Say hello fron MNetwork \n");
+    return 10;
+}
   void postInit() {}
-
+  
   void enable() { enabled = true; }
 
   void disable() { enabled = false; }
@@ -261,8 +291,12 @@ private:
   bool enabled = true;
 };
 
-MOD_EXPORT void _INIT_() {
+MOD_EXPORT void _INIT_(AppSystem::ioc::container* container) {
     // Nothing here
+    //container->RegisterInstance<IMNetwork,MNetwork>();
+    container->register_type<IMNetwork, Employee>();
+    
+
     std::coroutine_handle<ReturnObject3::promise_type> h = counter3();
     ReturnObject3::promise_type &promise = h.promise();
     for (int i = 0; i < 3; ++i) {
