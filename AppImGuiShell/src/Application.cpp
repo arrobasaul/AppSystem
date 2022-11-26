@@ -528,7 +528,7 @@ namespace AppSystem
 	void Application::Shutdown()
 	{
 		for (auto &layer : m_LayerStack)
-			layer->OnDetach();
+			dynamic_cast<Service*>(layer.get())->OnDetach();
 
 		m_LayerStack.clear();
 

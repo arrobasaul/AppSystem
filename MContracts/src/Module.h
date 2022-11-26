@@ -36,7 +36,7 @@ namespace AppSystem {
 #endif
         AppSystem::ServiceInfo_t* info;
         void (*init)( AppSystem::ioc::container* container );
-        AppSystem::Service* (*createInstance)(std::string name);
+        AppSystem::Service* (*createInstance)();
         void (*deleteInstance)(AppSystem::Service* instance);
         void (*end)();
 

@@ -13,8 +13,8 @@
 #include <string>
 #include <string_view>
 #include <vector>
-
-class ExampleLayer : public AppSystem::Service {
+#include "VisualService/VisualService.h"
+class ExampleLayer : public AppSystem::VisualService {
 public:
   
   bool enabled;

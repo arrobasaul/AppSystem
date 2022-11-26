@@ -58,6 +58,13 @@ add_custom_command(TARGET AppImGuiShell POST_BUILD        # Adds a post-build ev
     COMMAND ${CMAKE_COMMAND} -E 
         copy_if_different ${CMAKE_SOURCE_DIR}/out/build/Modules/RayTracing/libRayTracing.so ${dist_gem_name} 
 )
+add_custom_command(TARGET AppImGuiShell POST_BUILD        # Adds a post-build event to MyTest
+    COMMAND ${CMAKE_COMMAND} -E # Create a working directory. 
+        make_directory ${dist_gem_name}
+    COMMAND ${CMAKE_COMMAND} -E 
+        copy_if_different ${CMAKE_SOURCE_DIR}/out/build/Modules/TestVisualService/libTestVisualService.so ${dist_gem_name} 
+)
+
 
 #add_custom_target (libMNetwork
  #   COMMAND ${CMAKE_COMMAND} -E # Create a working directory. 

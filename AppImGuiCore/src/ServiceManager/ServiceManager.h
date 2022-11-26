@@ -14,6 +14,10 @@
 #include "IOCContainer.h"
 #include "ioc.h"
 #include "Base.h"
+#include "VisualService/VisualService.h"
+#include "Service.h"
+#include <memory>
+#include "ApplicationContext.h"
 namespace AppSystem
 {
 
@@ -22,10 +26,13 @@ namespace AppSystem
     private:
         /* data */
     public:
+        std::shared_ptr<ServicePool> servicePool;
         spdlog::logger _logger;
         IOCContainer* _container;
         AppSystem::ioc::container* Container = new AppSystem::ioc::container();
         AppSystem::Service_t loadModule(std::string path);
+
+        std::shared_ptr<ApplicationContext> applicationContext{nullptr};
 
         int createInstance(std::string name, std::string module);
         int deleteInstance(std::string name);
@@ -47,6 +54,7 @@ namespace AppSystem
 
         std::map<std::string, AppSystem::Service_t> modules;
         std::map<std::string, AppSystem::Instance_t> instances;
+        std::vector<std::shared_ptr<VisualService>> visual;
         spdlog::logger createLog();
 
         ServiceManager(/* args */);

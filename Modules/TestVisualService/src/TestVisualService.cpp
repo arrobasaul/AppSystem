@@ -11,8 +11,10 @@
 #include "ioc.h"
 #include "MNetwork.h"
 #include "VisualService/VisualService.h"
-#include <irrKlang.h>
 #include "ApplicationContext.h"
+#include "MNetwork.h"
+//#include "MNetwork.cpp"
+#include <irrKlang.h>
 using namespace irrklang;
 //------------------------------------------------------------------------------
 
@@ -23,12 +25,12 @@ using namespace irrklang;
 #endif
 extern "C" EXPORT std::string Name() {
   char *nombre;
-  std::string str_obj("RayTracing");
+  std::string str_obj("TestVisualService");
   nombre = &str_obj[0];
   return str_obj;
 }
 
-APP_MOD_INFO{/* Name:            */ "RayTracing",
+APP_MOD_INFO{/* Name:            */ "TestVisualService",
              /* Description:     */ "My fancy new module",
              /* Author:          */ "arrobasaul",
              /* Version:         */ 0,
@@ -36,11 +38,10 @@ APP_MOD_INFO{/* Name:            */ "RayTracing",
              0,
              /* Max instances    */ -1};
 
-class RayTracing : public AppSystem::VisualService {
+class TestVisualService : public AppSystem::VisualService {
 public:
-  std::string paraPrueba = " paraPrueba RayTracing";
-  RayTracing() {}
-  RayTracing(std::string name) {
+  TestVisualService(){}
+  TestVisualService(std::string name) {
     this->name = name;
     
 
@@ -59,7 +60,7 @@ public:
   }
   ISoundEngine* engine = createIrrKlangDevice();
 
-  ~RayTracing() {
+  ~TestVisualService() {
     // gui::menu.removeEntry(name);
     engine->drop(); 
   }
@@ -70,13 +71,23 @@ public:
 
   void disable() { enabled = false; }
 
-  void OnAttach(std::shared_ptr<AppSystem::ApplicationContext> applicationContext) {}
+  void OnAttach(std::shared_ptr<AppSystem::ApplicationContext> applicationContext) {
+    //auto net = applicationContext->servicePool->getSingleService<IMNetwork>();
+
+    //auto net2 = applicationContext->servicePool->getSingleServiceByName<Service>("MNetwork");
+
+    //auto net22 = dynamic_pointer_cast<MNetwork>(net2);
+    //std::cout << " esot es para " /*<< net22->paraPrueba */<< std::endl;
+    //auto net3 = applicationContext->servicePool->getSingleServiceByName<VisualService>("RayTracing");
+  
+    //net->sayHello();
+  }
   void OnDetach() {}
   void OnUpdate(float ts) {}
   bool isEnabled() { return enabled; }
 
   virtual void OnUIRender() override {
-    ImGui::Begin("Hello from network");
+    ImGui::Begin("Hello from TestVisualService");
     static char _host[128];
     static char _port[128];
     static char _target[128];
@@ -90,37 +101,17 @@ public:
       auto const host = _host;
       auto const port = _port;
       auto const target = _target;
-      /*int v = !std::strcmp("1.0", _version) ? 10 : 11;
-
-      // The io_context is required for all I/O
-      net::io_context ioc;
-      auto start = std::chrono::system_clock::now();
-      // Your Code to Execute //
-      // Launch the asynchronous operation
-      std::make_shared<session>(ioc)->run(host, port, target, v);
-      auto end = std::chrono::system_clock::now();
-
-      std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end -
-                                                                         start)
-                       .count()
-                << "ms" << std::endl;
-      // Run the I/O service. The call will return when
-      // the get operation is complete.
-
-      // std::thread thercontext = std::thread([&]()
-      //                                  { ioc.run(); });
-*/
     }
     ImGui::End();
   }
   
 private:
   static void menuHandler(void *ctx) {
-    RayTracing *_this = (RayTracing *)ctx;
+    TestVisualService *_this = (TestVisualService *)ctx;
     // ImGui::Text("Hello SDR++, my name is %s", _this->name.c_str());
   }
   bool enabled = true;
-  std::string name = "RayTracing";
+  std::string name = "TestVisualService";
 };
 
 MOD_EXPORT void _INIT_(AppSystem::ioc::container* container) {
@@ -130,16 +121,16 @@ MOD_EXPORT void _INIT_(AppSystem::ioc::container* container) {
     std::cout << "Resolving Interface" << std::endl;
     std::shared_ptr<IMNetwork> Value = container->resolve<IMNetwork>();
     int val = Value->sayHello();
-    printf("You are in inside Mcore2 on win fron other \n");
+    printf("You are in inside TestVisualService\n");
     printf("val " + val);
 }
 
 MOD_EXPORT AppSystem::Service *_CREATE_INSTANCE_() {
-  return new RayTracing();
+  return new TestVisualService();
 }
 
 MOD_EXPORT void _DELETE_INSTANCE_(void *instance) {
-  delete (RayTracing *)instance;
+  delete (TestVisualService *)instance;
 }
 
 MOD_EXPORT void _END_() {
@@ -147,5 +138,5 @@ MOD_EXPORT void _END_() {
 }
 MOD_EXPORT AppSystem::Service *_CREATE_LAYER_(std::string name) {
   printf("_CREATE_LAYER_\n");
-  return new RayTracing(name);
+  return new TestVisualService(name);
 }

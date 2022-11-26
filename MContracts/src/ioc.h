@@ -14,7 +14,9 @@
 #include <stdlib.h>
 #include <typeinfo>
 #include <map>
+#include <vector>
 #include <string>
+#include <iostream>
 #include <cstring>
 #include <memory>
 #include <typeindex>
@@ -338,7 +340,37 @@ namespace AppSystem::ioc
                     }
                     return result;
                 }
-            
+
+            // Resolve factory for interface type. 
+            // If that fails then return NULL.
+            template<typename I>
+                std::vector<ifactory*>
+                resolve_factory_by_type( ) const
+                {
+                    // Lookup interface type. If it cannot be found return
+                    // the default for that type.
+                    ifactory *result = NULL;
+                    registration_types::const_iterator i = types.find(std::type_index(typeid(I)));
+                    std::vector<ifactory*> serv;
+                    if( i != types.end() )
+                    {
+
+                        for ( auto itr = i->second.begin(); itr != i->second.end(); ++itr) {
+                            std::cout << '\t' << itr->first << '\t' << itr->second << '\n';
+                            serv.push_back(itr->second);
+                        }
+                        // We've got the type registered but we now need to look
+                        // up the named version.
+                        /*const named_factory::const_iterator c = 
+                            i->second.find(name_in);
+                        if( c != i->second.end() )
+                        {
+                            result = c->second;
+                        }*/
+                    }
+                    return serv;
+                    // return result;
+                }
             
 
         public:
@@ -465,6 +497,21 @@ namespace AppSystem::ioc
                         result = reinterpret_cast<I *>( factory->create_item() );
                     }
                     return std::shared_ptr<I>(result);
+                }
+
+            // Resolve interface type by type. If that fails then return NULL.
+            template<typename I>
+                std::vector<std::shared_ptr<I>> resolve_by_type( ) const
+                {
+                    //I *result = NULL;
+                    //const ifactory *factory = 
+
+                    //return resolve_factory_by_type<I>();
+                    std::vector<std::shared_ptr<I>> services;
+                    for(auto valor : resolve_factory_by_type<I>()){
+                        services.push_back(std::shared_ptr<I>(reinterpret_cast<I *>( valor->create_item())));
+                    }
+                    return services;
                 }
 
             // Destroy all factories implementing the given interface

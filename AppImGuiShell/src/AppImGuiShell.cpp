@@ -5,20 +5,24 @@
 #include <dirent.h>
 #include <dlfcn.h>
 #include <iostream>
+#include <vector>
+#include <memory>
 #include "Image.h"
 #include "Timer.h"
 #include "Random.h"
-
+#include "VisualService/VisualService.h"
+#include "ApplicationContext.h"
+#include "ServicePool.h"
 //#include "Config.h"
 
 bool g_ApplicationRunning = true;
 
-class ExampleLayer : public AppSystem::Service {
+class ExampleLayer : public AppSystem::VisualService {
 public:
   
   bool enabled;
 
-  virtual void OnUIRender() override {
+  void OnUIRender() override {
     ImGui::Begin("Play Render");
     ImGui::Text("Last render:  %.3fms",m_lastRenderTime);
       if(ImGui::Button("Play")){
@@ -65,10 +69,6 @@ private:
   uint32_t* m_ImageData = nullptr;
   float m_lastRenderTime;
 };
-struct Moder {
-  void *handle;
-  AppSystem::Service *(*createInstance)(std::string name);
-};
 AppSystem::Application *AppSystem::CreateApplication(int argc, char **argv) {
 
   std::cout << "aqui" << std::endl;
@@ -88,15 +88,18 @@ AppSystem::Application *AppSystem::CreateApplication(int argc, char **argv) {
   // std::shared_ptr<Layer> l(lay);
   //  app->PushLayer(l);
   ServiceManager s;
-  auto ins = s.instances;
+  ///ServicePool p(s.applicationContext->servicePool);
+  std::vector<std::shared_ptr<AppSystem::VisualService>> ins = s.applicationContext->servicePool->getServices<AppSystem::VisualService>();
+   
+  
   std::cout << ins.size() << std::endl;
-  for (auto const &[key, val] : ins) {
+  for (auto val : ins) {
     std::cout << "instances" << std::endl;
-    std::cout << key << ':' << val.instance << std::endl;
-    std::shared_ptr<Service> l(val.instance);
-    app->PushLayer(l);
+    //std::cout << key << ':' << val.instance << std::endl;
+    //std::shared_ptr<VisualService> l(dynamic_cast<VisualService*>(val.instance));
+    app->PushLayer(val,s.applicationContext);
   }
-  app->PushLayer<ExampleLayer>();
+  //app->PushLayer<ExampleLayer>();
   app->SetMenubarCallback([app]() {
     if (ImGui::BeginMenu("File")) {
       if (ImGui::MenuItem("Exit")) {

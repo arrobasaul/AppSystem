@@ -6,11 +6,12 @@
 #include "Renderer.hpp"
 #include "Window.hpp"
 #include "Service.h"
+#include "Service.h"
 #include <functional>
 // std
 #include <memory>
 #include <vector>
-
+#include "VisualService/VisualService.h"
 namespace AppEngine {
 class FirstApp {
  public:
@@ -28,14 +29,14 @@ class FirstApp {
       m_MenubarCallback = menubarCallback;
     }
   template <typename T> void PushLayer() {
-    static_assert(std::is_base_of<AppSystem::Service, T>::value,
+    static_assert(std::is_base_of<AppSystem::VisualService, T>::value,
                   "Pushed type is not subclass of Layer!");
-    m_LayerStack.emplace_back(std::make_shared<T>())->OnAttach();
+    //m_LayerStack.emplace_back(std::make_shared<T>())->OnAttach();
   }
 
-  void PushLayer(const std::shared_ptr<AppSystem::Service> &layer) {
+  void PushLayer(const std::shared_ptr<AppSystem::VisualService> &layer ) {
     m_LayerStack.emplace_back(layer);
-    layer->OnAttach();
+    //layer->OnAttach();
   }
  private:
   void loadGameObjects();
@@ -55,7 +56,7 @@ class FirstApp {
   std::unique_ptr<DescriptorPool> globalPool{};
   GameObject::Map gameObjects;
 
-  std::vector<std::shared_ptr<AppSystem::Service>> m_LayerStack;
+  std::vector<std::shared_ptr<AppSystem::VisualService>> m_LayerStack;
   std::function<void()> m_MenubarCallback;
 };
 }  // namespace AppEngine

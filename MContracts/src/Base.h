@@ -1,3 +1,4 @@
+#pragma once
 #include "Module.h"
 #ifdef _WIN32
 #ifdef APP_IS_CORE

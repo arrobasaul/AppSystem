@@ -74,7 +74,7 @@ public:
         
         mod.info = (AppSystem::ServiceInfo_t *)dlsym(mod.handle, "_INFO_");
         mod.init = (void (*)(AppSystem::ioc::container* container))dlsym(mod.handle, "_INIT_");
-        mod.createInstance = (AppSystem::Service * (*)(std::string)) dlsym(mod.handle, "_CREATE_INSTANCE_");
+        mod.createInstance = (AppSystem::Service * (*)()) dlsym(mod.handle, "_CREATE_INSTANCE_");
         mod.deleteInstance = (void (*)(AppSystem::Service *))dlsym(mod.handle, "_DELETE_INSTANCE_");
         mod.end = (void (*)())dlsym(mod.handle, "_END_");
 #endif
@@ -147,8 +147,22 @@ public:
         }
         AppSystem::Instance_t inst;
         inst.module = modules[module];
-        inst.instance = inst.module.createInstance(name);
-        instances[name] = inst;
+        
+        inst.instance = inst.module.createInstance();
+        
+        if (VisualService* c  = dynamic_cast<VisualService*>(inst.instance) )
+        {
+            instances[name] = inst;
+            std::shared_ptr<VisualService> sr(dynamic_cast<VisualService*>(inst.instance));
+            //Container->register_delegate_with_name<VisualService>(name, inst.module.createInstance);
+            Container->register_instance_with_name<VisualService>(name, sr);
+        }
+        else{
+            instances[name] = inst;
+            // Container->register_instance_with_name<Service>(name, sr);
+            Container->register_delegate_with_name<Service>(name, inst.module.createInstance);
+
+        }
         // onInstanceCreated.emit(name);
         return 0;
     }
@@ -184,7 +198,12 @@ public:
         /*VisualService* v;
         v = dynamic_cast<VisualService*>(instances[name].instance);
         if (v==0) std::cout << "Null pointer on first type-cast" << std::endl;*/
-        instances[name].instance->enable();
+        if (VisualService* c = dynamic_cast<VisualService*>(instances[name].instance))
+        {
+            // do Child specific stuff
+            //instances[name].instance->enable();
+            c->enable();
+        }
         return 0;
     }
 
@@ -195,7 +214,12 @@ public:
             _logger.error("Cannot disable '{0}', instance doesn't exist", name);
             return -1;
         }
-        instances[name].instance->disable();
+        if (VisualService* c = dynamic_cast<VisualService*>(instances[name].instance))
+        {
+            // do Child specific stuff
+            //instances[name].instance->enable();
+            c->disable();
+        }
         return 0;
     }
 
@@ -206,7 +230,13 @@ public:
             _logger.error("Cannot check if '{0}' is enabled, instance doesn't exist", name);
             return false;
         }
-        return instances[name].instance->isEnabled();
+        if (VisualService* c = dynamic_cast<VisualService*>(instances[name].instance))
+        {
+            // do Child specific stuff
+            //instances[name].instance->enable();
+            c->isEnabled();
+        }
+        return false;
     }
 
     void ServiceManager::postInit(std::string name)
@@ -216,7 +246,13 @@ public:
             _logger.error("Cannot post-init '{0}', instance doesn't exist", name);
             return;
         }
-        instances[name].instance->postInit();
+        if (VisualService* c = dynamic_cast<VisualService*>(instances[name].instance))
+        {
+            // do Child specific stuff
+            //instances[name].instance->enable();
+            c->postInit();
+        }
+        //instances[name].instance->postInit();
     }
 
     std::string ServiceManager::getInstanceModuleName(std::string name)
@@ -253,7 +289,13 @@ public:
         for (auto &[name, inst] : instances)
         {
             _logger.info("Running post-init for {0}", name);
-            inst.instance->postInit();
+             if (VisualService* c = dynamic_cast<VisualService*>(instances[name].instance))
+            {
+                // do Child specific stuff
+                //instances[name].instance->enable();
+                c->postInit();
+            }
+            //inst.instance->postInit();
         }
     }
     ServiceManager::ServiceManager()
@@ -261,23 +303,23 @@ public:
     {
         //_container->RegisterInstance<IAmAThing,TheThing>();
 
-    try
-    {
-        // Register
-        std::cout << "Registering Concretion as Interface" << std::endl;
-        Container->register_type<IAmAThing, TheThing>();
-        // Resolve
-        std::cout << "Resolving Interface" << std::endl;
-        std::shared_ptr<IAmAThing> Value = Container->resolve<IAmAThing>();
-        if( Value.get() )
+        try
         {
-            std::cout << "Successfully resolved Interface" << std::endl;
+            // Register
+            std::cout << "Registering Concretion as Interface" << std::endl;
+            Container->register_type<IAmAThing, TheThing>();
+            // Resolve
+            std::cout << "Resolving Interface" << std::endl;
+            std::shared_ptr<IAmAThing> Value = Container->resolve<IAmAThing>();
+            if( Value.get() )
+            {
+                std::cout << "Successfully resolved Interface" << std::endl;
+            }
         }
-    }
-    catch( const std::exception &e )
-    {
-        PrintException( __func__, e );
-    }
+        catch( const std::exception &e )
+        {
+            PrintException( __func__, e );
+        }
         std::string path = "modules";
         std::cout << path << std::endl;
         for (const auto &file : std::filesystem::recursive_directory_iterator(path))
@@ -290,6 +332,14 @@ public:
                 std::cout << file.path() << std::endl;
             }
         }
+        Container->resolve_by_type<Service>();
+
+        servicePool = std::make_shared<ServicePool>(Container);
+
+        applicationContext = std::make_shared<ApplicationContext>(servicePool);
+        /*for(auto valor : Container->resolve_by_type<Service>()){
+            visual.push_back(std::shared_ptr<VisualService>(reinterpret_cast<VisualService *>( valor->create_item())));
+        }*/
     }
     spdlog::logger ServiceManager::createLog(){
         auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();

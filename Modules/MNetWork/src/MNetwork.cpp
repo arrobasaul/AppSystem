@@ -1,7 +1,6 @@
 #pragma once
 #include "Base.h"
 #include "../include/MNetwork.h"
-#include "Layer.h"
 #include "imgui.h"
 #include <cstdlib>  /* Aquí contiene la función system("pause"); */
 #include <iostream> /* Importamos esta librería para hacer uso de cout y así ver el resultado en pantalla. */
@@ -18,6 +17,8 @@
 #include "CoreRuntime.hpp"
 
 #include "ioc.h"
+#include "ApplicationContext.h"
+#include "../include/MNetwork.h"
 /*
 namespace beast = boost::beast; // from <boost/beast.hpp>
 namespace http = beast::http;   // from <boost/beast/http.hpp>
@@ -200,11 +201,11 @@ class Employee : public IMNetwork  {
       printf("Say hello fron Employee\n");
     return 10;
   }
-}; 
-
+};
 class MNetwork : public IMNetwork ,  public AppSystem::Service {
 public:
-  MNetwork();
+  std::string paraPrueba = " paraPrueba MNetwork";
+  MNetwork() = default;
   MNetwork(std::string name) {
     this->name = name;
     /*Person person;  
@@ -223,62 +224,19 @@ public:
   ~MNetwork() {
     // gui::menu.removeEntry(name);
   }
-int sayHello() const {
-      printf("Say hello fron MNetwork \n");
-    return 10;
-}
-  void postInit() {}
+        int sayHello() const {
+        printf("Say hello fron MNetwork \n");
+        return 10;
+        }
+  void OnAttach(std::shared_ptr<AppSystem::ApplicationContext> applicationContext) {}
+  void OnDetach() {}
+  /*void postInit() {}
   
   void enable() { enabled = true; }
 
   void disable() { enabled = false; }
-
   bool isEnabled() { return enabled; }
-  virtual void OnUIRender() override {
-
-    
-
-
-
-    ImGui::Begin("Hello from network");
-    static char _host[128];
-    static char _port[128];
-    static char _target[128];
-    static char _version[128];
-    ImGui::InputText("Host", _host, IM_ARRAYSIZE(_host));
-    ImGui::InputText("Port", _port, IM_ARRAYSIZE(_port));
-    ImGui::InputText("Target", _target, IM_ARRAYSIZE(_target));
-    ImGui::InputText("Version", _version, IM_ARRAYSIZE(_version));
-
-    if (ImGui::Button("Save")) {
-      auto const host = _host;
-      auto const port = _port;
-      auto const target = _target;
-      /*int v = !std::strcmp("1.0", _version) ? 10 : 11;
-
-      // The io_context is required for all I/O
-      net::io_context ioc;
-      auto start = std::chrono::system_clock::now();
-      // Your Code to Execute //
-      // Launch the asynchronous operation
-      std::make_shared<session>(ioc)->run(host, port, target, v);
-      auto end = std::chrono::system_clock::now();
-
-      std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end -
-                                                                         start)
-                       .count()
-                << "ms" << std::endl;
-      // Run the I/O service. The call will return when
-      // the get operation is complete.
-
-      // std::thread thercontext = std::thread([&]()
-      //                                  { ioc.run(); });
-*/
-    }
-    ImGui::End();
-
-    
-  }
+  */
   
 
 private:
@@ -287,10 +245,9 @@ private:
     // ImGui::Text("Hello SDR++, my name is %s", _this->name.c_str());
   }
   
-  std::string name;
+  std::string name = "MNetwork";
   bool enabled = true;
 };
-
 MOD_EXPORT void _INIT_(AppSystem::ioc::container* container) {
     // Nothing here
     //container->RegisterInstance<IMNetwork,MNetwork>();
@@ -308,8 +265,8 @@ MOD_EXPORT void _INIT_(AppSystem::ioc::container* container) {
     printf("You are in inside Mcore2 on win\n");
 }
 
-MOD_EXPORT AppSystem::Service *_CREATE_INSTANCE_(std::string name) {
-  return new MNetwork(name);
+MOD_EXPORT AppSystem::Service *_CREATE_INSTANCE_() {
+  return new MNetwork();
 }
 
 MOD_EXPORT void _DELETE_INSTANCE_(void *instance) {
