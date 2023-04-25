@@ -13,16 +13,16 @@
 #include "VisualService/VisualService.h"
 #include "ApplicationContext.h"
 #include "ServicePool.h"
+#include "imgui.h"
 //#include "Config.h"
 
 bool g_ApplicationRunning = true;
 
 class ExampleLayer : public AppSystem::VisualService {
-public:
-  
-  bool enabled;
 
-  void OnUIRender() override {
+public:
+  bool enabled;
+  void OnUIRender() {
     ImGui::Begin("Play Render");
     ImGui::Text("Last render:  %.3fms",m_lastRenderTime);
       if(ImGui::Button("Play")){
@@ -31,12 +31,18 @@ public:
     ImGui::End();
 
     //ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f,0.0f));
+    //ImGui_ImplVulkan_AddTexture()
     ImGui::Begin("ViewPort");
       m_ViewportW = ImGui::GetContentRegionAvail().x;
       m_ViewportH = ImGui::GetContentRegionAvail().y;
       if(m_Image){
-        //auto img = (ImTextureID)m_Image->GetDescriptorSet();
-        //ImGui::Image(img, ImVec2( (float) m_Image->GetWidth(), (float) m_Image->GetHeight() ));
+        //if (m_Image->LoadTextureFromFile("img.png")){
+          //ImGui::Text("LoadTextureFromFile:  ");
+        //}
+        ImGui::Text("pointer = %p", m_Image->GetDescriptorSet());
+        ImGui::Text("size = %d x %d", m_Image->GetWidth(), m_Image->GetHeight());
+        ImGui::Image((ImU64)m_Image->m_DescriptorSet, ImVec2((float) m_Image->GetWidth(), (float) m_Image->GetHeight()) );
+        //auto img = (long long unsigned int)m_Image->GetDescriptorSet();
       }
     ImGui::End();
 
@@ -56,19 +62,30 @@ public:
     m_lastRenderTime = timer.ElapsedMillis();
     // ImGui::ShowDemoWindow();
   }
-  void postInit() {}
+  void postInit(){}
 
   void enable() { enabled = true; }
 
   void disable() { enabled = false; }
 
   bool isEnabled() { return enabled; }
+
+  void OnAttach(std::shared_ptr<AppSystem::ApplicationContext> applicationContext)
+  {
+    m_applicationContext = applicationContext;
+  }
+  void OnDetach(){
+
+  }
+  void OnUpdate(float ts) {}
 private:
   uint32_t m_ViewportW = 0, m_ViewportH = 0;
-  std::shared_ptr<AppSystem::Image> m_Image;
+  std::shared_ptr<AppSystem::Image> m_Image = std::make_shared<AppSystem::Image>("img.png");
   uint32_t* m_ImageData = nullptr;
-  float m_lastRenderTime;
+  float m_lastRenderTime = 0;
+  std::shared_ptr<AppSystem::ApplicationContext>  m_applicationContext;
 };
+
 AppSystem::Application *AppSystem::CreateApplication(int argc, char **argv) {
 
   std::cout << "aqui" << std::endl;
@@ -91,6 +108,8 @@ AppSystem::Application *AppSystem::CreateApplication(int argc, char **argv) {
   ///ServicePool p(s.applicationContext->servicePool);
   std::vector<std::shared_ptr<AppSystem::VisualService>> ins = s.applicationContext->servicePool->getServices<AppSystem::VisualService>();
    
+
+  
   
   std::cout << ins.size() << std::endl;
   for (auto val : ins) {
@@ -99,7 +118,9 @@ AppSystem::Application *AppSystem::CreateApplication(int argc, char **argv) {
     //std::shared_ptr<VisualService> l(dynamic_cast<VisualService*>(val.instance));
     app->PushLayer(val,s.applicationContext);
   }
-  //app->PushLayer<ExampleLayer>();
+  //std::shared_ptr<AppSystem::VisualService> example = std::make_shared<ExampleLayer>();
+  //app->PushLayer(example, s.applicationContext);
+  app->PushLayer<ExampleLayer>(s.applicationContext);
   app->SetMenubarCallback([app]() {
     if (ImGui::BeginMenu("File")) {
       if (ImGui::MenuItem("Exit")) {

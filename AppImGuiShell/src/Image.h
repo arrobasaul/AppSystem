@@ -30,6 +30,10 @@ namespace AppSystem
 		uint32_t GetWidth() const { return m_Width; }
 		uint32_t GetHeight() const { return m_Height; }
 
+		uint32_t findMemoryType(uint32_t type_filter, VkMemoryPropertyFlags properties);
+		bool LoadTextureFromFile(const char* filename);
+		void RemoveTexture();
+
 	private:
 		void AllocateMemory(uint64_t size);
 		void Release();
@@ -49,9 +53,10 @@ namespace AppSystem
 
 		size_t m_AlignedSize = 0;
 
-		VkDescriptorSet m_DescriptorSet = nullptr;
 
 		std::string m_Filepath;
+	public:
+		VkDescriptorSet m_DescriptorSet = nullptr;
 	};
 
 }

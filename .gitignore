@@ -45,3 +45,4 @@ vcpkg/
 out/
 run/
 .cache/
+Log/

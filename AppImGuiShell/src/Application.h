@@ -40,7 +40,9 @@ public:
     //static_assert(std::is_base_of<VisualService, T>::value,
     //              "Pushed type is not subclass of Layer!");
     //m_LayerStack.emplace_back(std::make_shared<T>())->OnAttach();
-    m_LayerStack.emplace_back(std::make_shared<VisualService>(new T()))->OnAttach(applicationContext);
+    //m_LayerStack.emplace_back(std::make_shared<VisualService>(new T()))->OnAttach(applicationContext);
+    //m_LayerStack.emplace_back(std::make_shared<T>())->OnAttach(applicationContext);
+    m_LayerStack.emplace_back(std::make_shared<T>())->OnAttach(applicationContext);
   }
 
   void PushLayer(const std::shared_ptr<VisualService> &layer,std::shared_ptr<ApplicationContext>  applicationContext) {

@@ -3,9 +3,11 @@ project(AppImGuiShell VERSION 1.0)
 include_directories(${CMAKE_SOURCE_DIR}/AppImGuiShell/src)
 include_directories(${CMAKE_SOURCE_DIR}/AppImGuiCore/src) # include files from AppImGuiCore
 include_directories(${CMAKE_SOURCE_DIR}/App.GuiFront/include)
+include_directories(${CMAKE_SOURCE_DIR}/App.GuiFront)
 include_directories(${CMAKE_SOURCE_DIR}/vendor/glm)
 include_directories(${CMAKE_SOURCE_DIR}/MContracts/src)
 include_directories(${CMAKE_SOURCE_DIR}/vendor/glfw/include)
+include_directories(${CMAKE_SOURCE_DIR}/vendor/ImGui)
 
 if(NOT CMAKE_BUILD_TYPE)
 set(CMAKE_BUILD_TYPE Debug CACHE STRING "" FORCE)
@@ -14,30 +16,32 @@ endif()
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DVK_PROTOTYPES")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DVK_PROTOTYPES")
 
+# add_compile_options(-Wall -Wextra -Wpedantic -fpermissive)
 # Libraries
 set (Vulkan_DIR bin/debug)
 find_package(Vulkan REQUIRED )
+find_package( OpenCV REQUIRED )
 #find_library(VULKAN_LIBRARY
 #NAMES vulkan vulkan-1)
 #set(LIBRARIES "glfw;${VULKAN_LIBRARY}")
-set(LIBRARIES "Vulkan::Vulkan")
+set(LIBRARIES "Vulkan::Vulkan" )
 message(STATUS "Vulkan: ${Vulkan_FOUND}")
 # Use vulkan headers from glfw:
 
 add_executable(AppImGuiShell ${sources} src/AppImGuiShell.cpp src/Application.cpp src/Input/Input.cpp src/Image.cpp src/Random.h src/Timer.h src/Image.h src/Input/KeyCodes.h)
 
-
+#include_directories( ${OpenCV_INCLUDE_DIRS})
 target_include_directories(AppImGuiShell 
 PUBLIC vendor/glfw/deps
 PUBLIC vendor/glfw/include
 PUBLIC ${PROJECT_BINARY_DIR}
+PUBLIC ${OpenCV_INCLUDE_DIRS}
 )
 
 target_link_directories(AppImGuiShell 
 PRIVATE ${CMAKE_SOURCE_DIR}/out/release/vendor/glfw/src
 )
-
-target_link_libraries(AppImGuiShell AppImGuiCore App.GuiFront glfw glm IrrKlang ${LIBRARIES})
+target_link_libraries(AppImGuiShell AppImGuiCore App.GuiFront glfw glm IrrKlang ${LIBRARIES} ${OpenCV_LIBS})
 
 add_library( IrrKlang SHARED IMPORTED GLOBAL)
 set_target_properties( IrrKlang PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/vendor/irrKlang/bin/linux-gcc-64/libIrrKlang.so )

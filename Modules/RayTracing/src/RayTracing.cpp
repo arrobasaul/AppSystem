@@ -13,8 +13,17 @@
 #include "VisualService/VisualService.h"
 #include <irrKlang.h>
 #include "ApplicationContext.h"
+
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/dnn.hpp>
+
+#include <opencv2/opencv.hpp>
 using namespace irrklang;
 //------------------------------------------------------------------------------
+using namespace cv;
+using namespace cv::dnn;
 
 #ifndef _WIN32
 #define EXPORT
@@ -39,10 +48,12 @@ APP_MOD_INFO{/* Name:            */ "RayTracing",
 class RayTracing : public AppSystem::VisualService {
 public:
   std::string paraPrueba = " paraPrueba RayTracing";
+  std::string path = "Latino.mp4";
+  
   RayTracing() {}
   RayTracing(std::string name) {
     this->name = name;
-    
+    std::string pathvid = "Latino.mp4";
 
     if (!engine)
       printf("error starting up the engine\n");
@@ -76,7 +87,7 @@ public:
   bool isEnabled() { return enabled; }
 
   virtual void OnUIRender() override {
-    ImGui::Begin("Hello from network");
+    ImGui::Begin("Hello from RayTraicing");
     static char _host[128];
     static char _port[128];
     static char _target[128];
@@ -112,6 +123,13 @@ public:
 */
     }
     ImGui::End();
+    ImGui::Begin("Hello video");
+      Mat img;
+      VideoCapture capturador(0);
+      capturador.read(img);
+      imshow("Image",img);
+      waitKey(1);
+    ImGui::End();
   }
   
 private:
@@ -119,6 +137,7 @@ private:
     RayTracing *_this = (RayTracing *)ctx;
     // ImGui::Text("Hello SDR++, my name is %s", _this->name.c_str());
   }
+  
   bool enabled = true;
   std::string name = "RayTracing";
 };

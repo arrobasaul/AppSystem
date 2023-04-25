@@ -1,6 +1,7 @@
 #ifndef _VISUALSERVICE_H_
 #define _VISUALSERVICE_H_
 #include "../Service.h"
+#include "ApplicationContext.h"
 namespace AppSystem {
     class VisualService: public Service
     {

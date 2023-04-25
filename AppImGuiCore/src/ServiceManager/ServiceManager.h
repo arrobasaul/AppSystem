@@ -18,6 +18,7 @@
 #include "Service.h"
 #include <memory>
 #include "ApplicationContext.h"
+//#include "MessageBroker.h"
 namespace AppSystem
 {
 
@@ -27,6 +28,8 @@ namespace AppSystem
         /* data */
     public:
         std::shared_ptr<ServicePool> servicePool;
+        std::shared_ptr<MessageBroker> messageBroker;
+        eventpp::Bus<Vacia>* _bus = new eventpp::Bus<Vacia>();
         spdlog::logger _logger;
         IOCContainer* _container;
         AppSystem::ioc::container* Container = new AppSystem::ioc::container();

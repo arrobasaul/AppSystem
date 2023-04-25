@@ -335,8 +335,8 @@ public:
         Container->resolve_by_type<Service>();
 
         servicePool = std::make_shared<ServicePool>(Container);
-
-        applicationContext = std::make_shared<ApplicationContext>(servicePool);
+        messageBroker = std::make_shared<MessageBroker>(_bus);
+        applicationContext = std::make_shared<ApplicationContext>(servicePool,messageBroker);
         /*for(auto valor : Container->resolve_by_type<Service>()){
             visual.push_back(std::shared_ptr<VisualService>(reinterpret_cast<VisualService *>( valor->create_item())));
         }*/
