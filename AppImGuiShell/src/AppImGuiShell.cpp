@@ -120,14 +120,18 @@ AppSystem::Application *AppSystem::CreateApplication(int argc, char **argv) {
   }
   //std::shared_ptr<AppSystem::VisualService> example = std::make_shared<ExampleLayer>();
   //app->PushLayer(example, s.applicationContext);
-  app->PushLayer<ExampleLayer>(s.applicationContext);
+  // app->PushLayer<ExampleLayer>(s.applicationContext);
   app->SetMenubarCallback([app]() {
-    if (ImGui::BeginMenu("File")) {
+    /*if (ImGui::BeginMenu("File")) {
       if (ImGui::MenuItem("Exit")) {
         app->Close();
       }
       ImGui::EndMenu();
-    }
+    }*/
+    if (ImGui::Button(ICON_FA_DOOR_CLOSED))
+      app->Close();
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
+			ImGui::SetTooltip("Cerrar App");
   });
   return app;
 }

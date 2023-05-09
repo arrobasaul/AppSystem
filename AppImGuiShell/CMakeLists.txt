@@ -8,6 +8,8 @@ include_directories(${CMAKE_SOURCE_DIR}/vendor/glm)
 include_directories(${CMAKE_SOURCE_DIR}/MContracts/src)
 include_directories(${CMAKE_SOURCE_DIR}/vendor/glfw/include)
 include_directories(${CMAKE_SOURCE_DIR}/vendor/ImGui)
+include_directories(${CMAKE_SOURCE_DIR}/vendor/nativefiledialog/src/include)
+include_directories(${CMAKE_SOURCE_DIR}/vendor/nativefiledialog/src)
 
 if(NOT CMAKE_BUILD_TYPE)
 set(CMAKE_BUILD_TYPE Debug CACHE STRING "" FORCE)
@@ -20,7 +22,9 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DVK_PROTOTYPES")
 # Libraries
 set (Vulkan_DIR bin/debug)
 find_package(Vulkan REQUIRED )
-find_package( OpenCV REQUIRED )
+#find_package( OpenCV REQUIRED )
+FIND_PACKAGE(PkgConfig REQUIRED)
+PKG_CHECK_MODULES(GTK REQUIRED gtkmm-3.0)
 #find_library(VULKAN_LIBRARY
 #NAMES vulkan vulkan-1)
 #set(LIBRARIES "glfw;${VULKAN_LIBRARY}")
@@ -35,13 +39,15 @@ target_include_directories(AppImGuiShell
 PUBLIC vendor/glfw/deps
 PUBLIC vendor/glfw/include
 PUBLIC ${PROJECT_BINARY_DIR}
-PUBLIC ${OpenCV_INCLUDE_DIRS}
+#PUBLIC ${OpenCV_INCLUDE_DIRS}
+PUBLIC ${GTK_INCLUDE_DIRS}
 )
 
 target_link_directories(AppImGuiShell 
 PRIVATE ${CMAKE_SOURCE_DIR}/out/release/vendor/glfw/src
+RPIVATE ${GTK_LIBRARY_DIRS}
 )
-target_link_libraries(AppImGuiShell AppImGuiCore App.GuiFront glfw glm IrrKlang ${LIBRARIES} ${OpenCV_LIBS})
+target_link_libraries(AppImGuiShell AppImGuiCore App.GuiFront glfw glm IrrKlang ${LIBRARIES} ${GTK_LIBRARIES}) #${OpenCV_LIBS}
 
 add_library( IrrKlang SHARED IMPORTED GLOBAL)
 set_target_properties( IrrKlang PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/vendor/irrKlang/bin/linux-gcc-64/libIrrKlang.so )

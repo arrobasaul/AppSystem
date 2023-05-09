@@ -13,17 +13,17 @@
 #include "VisualService/VisualService.h"
 #include <irrKlang.h>
 #include "ApplicationContext.h"
-
+/*
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/dnn.hpp>
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/opencv.hpp>*/
 using namespace irrklang;
 //------------------------------------------------------------------------------
-using namespace cv;
-using namespace cv::dnn;
+// using namespace cv;
+// using namespace cv::dnn;
 
 #ifndef _WIN32
 #define EXPORT
@@ -55,18 +55,18 @@ public:
     this->name = name;
     std::string pathvid = "Latino.mp4";
 
-    if (!engine)
-      printf("error starting up the engine\n");
+    //if (!engine)
+      //printf("error starting up the engine\n");
       //return 0; // error starting up the engine
-    else {
+    //else {
     // play some sound stream, looped
-      engine->play2D("getout.ogg", true);
+      //engine->play2D("getout.ogg", true);
 
-      char i = 0;
+      //char i = 0;
       //std::cin >> i; // wait for user to press some key
 
       // delete engine
-    }// gui::menu.registerEntry(name, menuHandler, this, NULL);
+    //}// gui::menu.registerEntry(name, menuHandler, this, NULL);
   }
   ISoundEngine* engine = createIrrKlangDevice();
 
@@ -123,13 +123,13 @@ public:
 */
     }
     ImGui::End();
-    ImGui::Begin("Hello video");
+    /*ImGui::Begin("Hello video");
       Mat img;
       VideoCapture capturador(0);
       capturador.read(img);
       imshow("Image",img);
       waitKey(1);
-    ImGui::End();
+    ImGui::End();*/
   }
   
 private:

@@ -21,6 +21,7 @@
 
 extern bool g_ApplicationRunning;
 
+ImGuiID dock_id_top, dock_id_right, dock_id_right2;
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
 // Your own project should not be affected, as you are likely to link with a newer binary of GLFW that is adequate for your version of Visual Studio.
@@ -80,6 +81,95 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debug_report(VkDebugReportFlagsEXT flags, 
 }
 #endif // IMGUI_VULKAN_DEBUG_REPORT
 
+
+void StyleColors() 
+{
+	ImGui::StyleColorsLight();
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	// light style from Pac�me Danhiez (user itamago) https://github.com/ocornut/imgui/pull/511#issuecomment-175719267
+	style.Alpha = 1.0f;
+	style.FrameRounding = 3.0f;
+	style.WindowRounding = 3.f;
+	style.Colors[ImGuiCol_Text] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+	style.Colors[ImGuiCol_TextDisabled] = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
+	style.Colors[ImGuiCol_WindowBg] = ImVec4(0.94f, 0.94f, 0.94f, 0.94f);
+	style.Colors[ImGuiCol_ChildBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+	style.Colors[ImGuiCol_PopupBg] = ImVec4(1.00f, 1.00f, 1.00f, 0.94f);
+	style.Colors[ImGuiCol_Border] = ImVec4(0.00f, 0.00f, 0.00f, 0.39f);
+	style.Colors[ImGuiCol_BorderShadow] = ImVec4(1.00f, 1.00f, 1.00f, 0.10f);
+	style.Colors[ImGuiCol_FrameBg] = ImVec4(1.00f, 1.00f, 1.00f, 0.94f);
+	style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.40f);
+	style.Colors[ImGuiCol_FrameBgActive] = ImVec4(0.26f, 0.59f, 0.98f, 0.67f);
+	style.Colors[ImGuiCol_TitleBg] = ImVec4(0.96f, 0.96f, 0.96f, 1.00f);
+	style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(1.00f, 1.00f, 1.00f, 0.51f);
+	style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.82f, 0.82f, 0.82f, 1.00f);
+	style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
+	style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.98f, 0.98f, 0.98f, 0.53f);
+	style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.69f, 0.69f, 0.69f, 1.00f);
+	style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.59f, 0.59f, 0.59f, 1.00f);
+	style.Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.49f, 0.49f, 0.49f, 1.00f);
+	//style.Colors[ImGuiCol_ComboBg] = ImVec4(0.86f, 0.86f, 0.86f, 0.99f);
+	style.Colors[ImGuiCol_CheckMark] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+	style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.24f, 0.52f, 0.88f, 1.00f);
+	style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+	style.Colors[ImGuiCol_Button] = ImVec4(0.26f, 0.59f, 0.98f, 0.40f);
+	style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+	style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.06f, 0.53f, 0.98f, 1.00f);
+	style.Colors[ImGuiCol_Header] = ImVec4(0.26f, 0.59f, 0.98f, 0.31f);
+	style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.80f);
+	style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+	//style.Colors[ImGuiCol_Header] = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
+	style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.78f);
+	//style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+	style.Colors[ImGuiCol_ResizeGrip] = ImVec4(1.00f, 1.00f, 1.00f, 0.50f);
+	style.Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.67f);
+	style.Colors[ImGuiCol_ResizeGripActive] = ImVec4(0.26f, 0.59f, 0.98f, 0.95f);
+	style.Colors[ImGuiCol_Button] = ImVec4(0.59f, 0.59f, 0.59f, 0.50f);
+	style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.98f, 0.39f, 0.36f, 1.00f);
+	style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.98f, 0.39f, 0.36f, 1.00f);
+	style.Colors[ImGuiCol_PlotLines] = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
+	style.Colors[ImGuiCol_PlotLinesHovered] = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
+	style.Colors[ImGuiCol_PlotHistogram] = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
+	style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
+	style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
+	style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
+
+	float alpha_ = 0.95f;
+	if (false) //dark
+	{
+		for (int i = 0; i <= ImGuiCol_COUNT; i++)
+		{
+			ImVec4& col = style.Colors[i];
+			float H, S, V;
+			ImGui::ColorConvertRGBtoHSV(col.x, col.y, col.z, H, S, V);
+
+			if (S < 0.1f)
+			{
+				V = 1.0f - V;
+			}
+			ImGui::ColorConvertHSVtoRGB(H, S, V, col.x, col.y, col.z);
+			if (col.w < 1.00f)
+			{
+				col.w *= alpha_;
+			}
+		}
+	}
+	else
+	{
+		for (int i = 0; i <= ImGuiCol_COUNT; i++)
+		{
+			ImVec4& col = style.Colors[i];
+			if (col.w < 1.00f)
+			{
+				col.x *= alpha_;
+				col.y *= alpha_;
+				col.z *= alpha_;
+				col.w *= alpha_;
+			}
+		}
+	}
+}
 static void SetupVulkan(const char **extensions, uint32_t extensions_count)
 {
 	VkResult err;
@@ -396,7 +486,698 @@ namespace AppSystem
 
 		Init();
 	}
+	void Application::DoOpenFile(const std::string& path)
+	{
+		File file;
+		file.fname = path;
+		file.time[0] = fs::last_write_time(file.fname);
+		std::error_code err;
+		file.time[1] = fs::last_write_time(file.codeGen.AltFName(file.fname), err);
+		file.rootNode = file.codeGen.Import(file.fname, messageBox.error);
+		if (!file.rootNode) {
+			messageBox.title = "CodeGen";
+			messageBox.message = "Unsuccessful import because of errors";
+			messageBox.buttons = ImRad::Ok;
+			messageBox.OpenPopup();
+			return;
+		}
 
+		auto it = stx::find_if(fileTabs, [&](const File& f) { return f.fname == file.fname; });
+		if (it == fileTabs.end()) {
+			fileTabs.push_back({});
+			it = fileTabs.begin() + fileTabs.size() - 1;
+		}
+		int idx = int(it - fileTabs.begin());
+		fileTabs[idx] = std::move(file);
+		ActivateTab(idx);
+
+		if (messageBox.error != "") {
+			messageBox.title = "CodeGen";
+			messageBox.message = "Import finished with errors";
+			messageBox.buttons = ImRad::Ok;
+			messageBox.OpenPopup();
+		}
+	}
+	void Application::OpenFile()
+	{
+		nfdchar_t *outPath = NULL;
+		nfdresult_t result = NFD_OpenDialog("h", NULL, &outPath);
+		if (result != NFD_OKAY)
+			return;
+		
+		ctx.snapMode = false;
+		ctx.selected.clear();
+		auto it = stx::find_if(fileTabs, [&](const File& f) { return f.fname == outPath; });
+		if (it != fileTabs.end()) 
+		{
+			ActivateTab(int(it - fileTabs.begin()));
+			if (it->modified) {
+				messageBox.message = "Reload and lose unsaved changes?";
+				messageBox.error = "";
+				messageBox.buttons = ImRad::Yes | ImRad::No;
+				messageBox.OpenPopup([=](ImRad::ModalResult mr) {
+					if (mr == ImRad::Yes)
+						DoOpenFile(outPath);
+					});
+			}
+			else {
+				DoOpenFile(outPath);
+			}
+		}
+		else {
+			DoOpenFile(outPath);
+		}
+	}
+
+	void Application::ReloadFiles()
+	{
+		for (auto& tab : fileTabs)
+		{
+			if (tab.fname == "")
+				continue;
+			auto time1 = fs::last_write_time(tab.fname);
+			std::error_code err;
+			auto time2 = fs::last_write_time(tab.codeGen.AltFName(tab.fname), err);
+			if (time1 == tab.time[0] && time2 == tab.time[1])
+				continue;
+			tab.time[0] = time1;
+			tab.time[1] = time2;
+			auto fn = fs::path(tab.fname).filename().string();
+			messageBox.message = "File content of '" + fn + "' has changed. Reload?";
+			messageBox.error = "";
+			messageBox.buttons = ImRad::Yes | ImRad::No;
+			messageBox.OpenPopup([&](ImRad::ModalResult mr) {
+				if (mr != ImRad::Yes)
+					return;
+				tab.rootNode = tab.codeGen.Import(tab.fname, messageBox.error);
+				tab.modified = false;
+				if (&tab == &fileTabs[activeTab])
+					ctx.snapMode = false;
+					ctx.selected.clear();
+				});
+		}
+	}
+
+	void Application::DoCloseFile()
+	{
+		ctx.selected.clear();
+		fileTabs.erase(fileTabs.begin() + activeTab);
+		ActivateTab(activeTab);
+	}
+
+	void Application::CloseFile()
+	{
+		if (activeTab < 0)
+			return;
+		if (fileTabs[activeTab].modified) {
+			messageBox.title = "Confirmation";
+			std::string fname = fs::path(fileTabs[activeTab].fname).filename().string();
+			if (fname.empty())
+				fname = UNTITLED;
+			messageBox.message = "Save changes to " + fname + "?";
+			messageBox.buttons = ImRad::Yes | ImRad::No | ImRad::Cancel;
+			messageBox.OpenPopup([=](ImRad::ModalResult mr) {
+				if (mr == ImRad::Yes)
+					SaveFile(true);
+				else if (mr == ImRad::No)
+					DoCloseFile();
+				else
+					glfwSetWindowShouldClose(m_WindowHandle, false);
+				});
+		}
+		else {
+			DoCloseFile();
+		}
+	}
+	void Application::SaveFile(bool thenClose)
+	{
+		auto& tab = fileTabs[activeTab];
+		bool trunc = false;
+		if (tab.fname == "") {
+			nfdchar_t *outPath = NULL;
+			nfdresult_t result = NFD_SaveDialog("h", NULL, &outPath);
+			if (result != NFD_OKAY) {
+				if (thenClose)
+					DoCloseFile();
+				return;
+			}
+			tab.fname = outPath;
+			if (!fs::path(tab.fname).has_extension())
+				tab.fname += ".h";
+			ctx.fname = tab.fname;
+			tab.codeGen.SetNamesFromId(
+				fs::path(tab.fname).stem().string());
+			trunc = true;
+		}
+		
+		if (!tab.codeGen.Export(tab.fname, trunc, tab.rootNode.get(), messageBox.error))
+		{
+			messageBox.title = "CodeGen";
+			messageBox.message = "Unsuccessful export due to errors";
+			messageBox.buttons = ImRad::Ok;
+			messageBox.OpenPopup([=](ImRad::ModalResult) {
+				if (thenClose)
+					DoCloseFile();
+				});
+			return;
+		}
+		
+		tab.modified = false;
+		tab.time[0] = fs::last_write_time(tab.fname);
+		std::error_code err;
+		tab.time[1] = fs::last_write_time(tab.codeGen.AltFName(tab.fname), err);
+		if (messageBox.error != "")
+		{
+			messageBox.title = "CodeGen";
+			messageBox.message = "Export finished with errors";
+			messageBox.buttons = ImRad::Ok;
+			messageBox.OpenPopup([=](ImRad::ModalResult) {
+				if (thenClose)
+					DoCloseFile();
+				});
+			return;
+		}
+
+		if (thenClose)
+			DoCloseFile();
+	}
+
+	void Application::ShowCode()
+	{
+		if (activeTab < 0)
+			return;
+		std::string path = (fs::temp_directory_path() / "imrad-preview.cpp").string();
+		std::ofstream fout(path);
+		ctx.ind = "";
+		auto* root = fileTabs[activeTab].rootNode.get();
+		root->Export(fout, ctx);
+		
+		if (ctx.errors.size()) {
+			fout << "\n// Export finished with errors\n";
+			for (const std::string& e : ctx.errors)
+				fout << "// " << e <<  "\n";
+		}
+		fout.close();
+	#ifdef WIN32
+		ShellExecute(NULL, "open", path.c_str(), NULL, NULL, SW_SHOWNORMAL);
+	#else
+		system(("xdg-open " + path).c_str());
+	#endif
+	}
+
+	void Application::NewWidget(const std::string& name)
+	{
+		activeButton = name;
+		if (name == "") {
+			ctx.selected.clear();
+			ctx.snapMode = false;
+		}
+		else {
+			newNode = Widget::Create(name, ctx);
+			ctx.selected.clear();
+			ctx.snapMode = true;
+		}
+	}
+
+	void Application::ActivateTab(int i)
+	{
+		if (i >= fileTabs.size())
+			i = (int)fileTabs.size() - 1;
+		if (i < 0) {
+			activeTab = -1;
+			ctx.selected.clear();
+			ctx.codeGen = nullptr;
+			return;
+		}
+		activeTab = i;
+		auto& tab = fileTabs[i];
+		ctx.selected = { tab.rootNode.get() };
+		ctx.codeGen = &tab.codeGen;
+		ctx.fname = tab.fname;
+	}
+	void Application::NewFile()
+	{
+		fileTabs.push_back({});
+		fileTabs.back().rootNode = std::make_unique<TopWindow>(ctx);
+		ActivateTab((int)fileTabs.size() - 1);
+	}
+	void Application::ToolbarUI()
+	{
+		ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + 0));
+		ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, TB_SIZE));
+		ImGui::SetNextWindowViewport(viewport->ID);
+
+		ImGuiWindowFlags window_flags = 0
+			| ImGuiWindowFlags_NoDocking
+			| ImGuiWindowFlags_NoTitleBar
+			| ImGuiWindowFlags_NoResize
+			| ImGuiWindowFlags_NoMove
+			| ImGuiWindowFlags_NoScrollbar
+			;
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+		ImGui::Begin("TOOLBAR", nullptr, window_flags);
+		ImGui::PopStyleVar();
+
+		const float BTN_SIZE = 30;
+		const auto& io = ImGui::GetIO();
+		/*if (m_MenubarCallback)
+		{
+			if (ImGui::BeginMenuBar())
+			{
+				m_MenubarCallback();
+				ImGui::EndMenuBar();
+			}
+		}*/
+		if (m_MenubarCallback)
+		{
+			m_MenubarCallback();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button(ICON_FA_FILE) ||
+			(ImGui::IsKeyPressed(ImGuiKey_N, false) && io.KeyCtrl)) 
+			NewFile();
+		if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
+			ImGui::SetTooltip("New File (Ctrl+N)");
+		
+		ImGui::SameLine();
+		if (ImGui::Button(ICON_FA_FOLDER_OPEN) ||
+			(ImGui::IsKeyPressed(ImGuiKey_O, false) && io.KeyCtrl))
+			OpenFile();
+		if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
+			ImGui::SetTooltip("Open File (Ctrl+O)");
+		
+		ImGui::BeginDisabled(activeTab < 0);
+		ImGui::SameLine();
+		if (ImGui::Button(ICON_FA_FLOPPY_DISK) ||
+			(ImGui::IsKeyPressed(ImGuiKey_S, false) && io.KeyCtrl))
+			SaveFile(false);
+		if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
+			ImGui::SetTooltip("Save File (Ctrl+S)");
+		
+		/*ImGui::SameLine();
+		if (ImGui::Button(ICON_FA_WINDOW_RESTORE))
+			SaveAll();
+		if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
+			ImGui::SetTooltip("Save All (Ctrl+Shift+S)");*/
+		
+		ImGui::SameLine();
+		ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+		ImGui::SameLine();
+		ImGui::Text("Theme:");
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(100);
+		ImGui::Combo("##style", &styleIdx, "Dark\0Light\0Classic\0\0");
+		ImGui::SameLine();
+		ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+		
+		ImGui::SameLine();
+		ImGui::BeginDisabled(activeTab < 0);
+		if (ImGui::Button(ICON_FA_BOLT) || // ICON_FA_BOLT, ICON_FA_RIGHT_TO_BRACKET) ||
+			(ImGui::IsKeyPressed(ImGuiKey_P, false) && io.KeyCtrl)) 
+			ShowCode();
+		if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
+			ImGui::SetTooltip("Preview Code (Ctrl+P)");
+		ImGui::EndDisabled();
+		
+		ImGui::SameLine();
+		if (ImGui::Button(ICON_FA_CUBES))
+		{
+			classWizard.codeGen = ctx.codeGen;
+			classWizard.root = fileTabs[activeTab].rootNode.get();
+			classWizard.OpenPopup();
+		}
+		if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
+			ImGui::SetTooltip("Class Wizard");
+		ImGui::EndDisabled();
+		
+		ImGui::SameLine();
+		if (ImGui::Button(ICON_FA_CIRCLE_INFO) ||
+			(ImGui::IsKeyPressed(ImGuiKey_F1, false)))
+		{
+			aboutDlg.OpenPopup();
+		}
+
+		ImGui::End();
+
+		float sp = ImGui::GetStyle().ItemSpacing.x;
+		ImGui::SetNextWindowPos({ viewport->Size.x - 520, 100 }, ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize({ 140, 260 }, ImGuiCond_FirstUseEver);
+		ImGui::Begin("Widgets", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar);
+		int n = (int)std::max(1.f, ImGui::GetContentRegionAvail().x / (BTN_SIZE + sp));
+		ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, { 0.5f, 0.5f });
+		for (const auto& cat : tbButtons)
+		{
+			ImGui::SetNextItemOpen(true, ImGuiCond_Appearing);
+			if (ImGui::CollapsingHeader(cat.first.c_str()))
+			{
+				int rows = (stx::ssize(cat.second) + n - 1) / n;
+				float h = rows * BTN_SIZE + (rows - 1) * 5;
+				ImGui::BeginChild(("cat" + cat.first).c_str(), { 0, h });
+				ImGui::Columns(n, nullptr, false);
+				for (const auto& tb : cat.second)
+				{
+					if (ImGui::Selectable(tb.label.c_str(), activeButton == tb.name, 0, ImVec2(BTN_SIZE, BTN_SIZE)))
+						NewWidget(tb.name);
+					if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal) && tb.name != "")
+						ImGui::SetTooltip(tb.name.c_str());
+
+					ImGui::NextColumn();
+				}
+				ImGui::EndChild();
+			}
+		}
+		ImGui::PopStyleVar();
+		ImGui::End();
+	}
+	void Application::TabsUI()
+	{
+		/*ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + TB_SIZE));
+		ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, TAB_SIZE));
+		ImGui::SetNextWindowViewport(viewport->ID);
+		*/
+		ImGuiWindowFlags window_flags = 0
+			//| ImGuiWindowFlags_NoDocking
+			| ImGuiWindowFlags_NoTitleBar
+			| ImGuiWindowFlags_NoResize
+			| ImGuiWindowFlags_NoCollapse
+			| ImGuiWindowFlags_NoMove
+			| ImGuiWindowFlags_NoScrollbar
+			//| ImGuiWindowFlags_NoSavedSettings
+			;
+		/*bool tmp;
+		ImGui::Begin("Moje.cpp", &tmp, window_flags);
+		ImGui::End();
+		ImGui::DockBuilderDockWindow("Tvoje.cpp", dock_id_top);
+		ImGui::Begin("Tvoje.cpp", &tmp, window_flags);
+		ImGui::End();
+		*/
+		bool notClosed = true;
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(4, 0.0f));
+		ImGuiWindowClass window_class;
+		window_class.DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar | ImGuiDockNodeFlags_NoResize;
+		ImGui::SetNextWindowClass(&window_class);
+		ImGui::Begin("FileTabs", 0, window_flags);
+		if (ImGui::BeginTabBar(".Tabs", ImGuiTabBarFlags_NoTabListScrollingButtons))
+		{
+			int untitled = 0;
+			for (int i = 0; i < (int)fileTabs.size(); ++i)
+			{
+				const auto& tab = fileTabs[i];
+				std::string fname = fs::path(tab.fname).filename().string();
+				if (fname == "")
+					fname = UNTITLED + std::to_string(++untitled);
+				if (tab.modified)
+					fname += " *";
+				if (ImGui::BeginTabItem(fname.c_str(), &notClosed, i == activeTab ? ImGuiTabItemFlags_SetSelected : 0))
+				{
+					ImGui::EndTabItem();
+				}
+				if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal) && tab.fname != "")
+					ImGui::SetTooltip(tab.fname.c_str());
+
+				if (!i)
+				{
+					auto min = ImGui::GetItemRectMin();
+					auto max = ImGui::GetItemRectMax();
+					ctx.wpos.x = min.x + 20;
+					ctx.wpos.y = max.y + 20;
+					//const auto* viewport = ImGui::GetMainViewport();
+					//ctx.wpos = viewport->GetCenter() + ImVec2(min.x, max.y) / 2;
+				}
+				if (!notClosed)
+				{
+					ActivateTab(i);
+					CloseFile();
+				}
+				else if (ImGui::IsItemActivated() && i != activeTab)
+				{
+					ActivateTab(i);
+				}
+			}
+			ImGui::EndTabBar();
+		}
+		ImGui::End();
+		ImGui::PopStyleVar();
+	}
+
+	void Application::HierarchyUI()
+	{
+		ImGui::Begin("Hierarchy");
+		if (activeTab >= 0 && fileTabs[activeTab].rootNode) 
+			fileTabs[activeTab].rootNode->TreeUI(ctx);
+		ImGui::End();
+	}
+
+	void Application::PropertyRowsUI(bool pr)
+	{
+		int keyPressed = 0;
+		if (addInputCharacter)
+		{
+			//select all text when activating
+			auto* g = ImGui::GetCurrentContext();
+			g->NavNextActivateFlags &= ~ImGuiActivateFlags_TryToPreserveState;
+			g->NavActivateFlags &= ~ImGuiActivateFlags_TryToPreserveState;
+			//and send a character to overwrite it
+			ImGui::GetIO().AddInputCharacter(addInputCharacter);
+			addInputCharacter = 0;
+		}
+		if (!ImGui::GetIO().WantTextInput && !(ImGui::GetIO().KeyMods & ~(1 << 13)))
+		{
+			for (int key = ImGuiKey_A; key <= ImGuiKey_Z; ++key)
+				if (ImGui::IsKeyPressed((ImGuiKey)key)) {
+					keyPressed = key - ImGuiKey_A + (ImGui::GetIO().KeyShift ? 'A' : 'a');
+					break;
+				}
+		}
+
+		ImGuiTableFlags flags = ImGuiTableFlags_BordersOuter | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable;
+		if (ImGui::BeginTable(pr ? "pg" : "pge", 2, flags))
+		{
+			ImGui::TableSetupColumn("name", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableSetupColumn("value", ImGuiTableColumnFlags_WidthStretch);
+
+			//determine common properties for a selection set
+			std::vector<std::string_view> pnames;
+			std::vector<std::string> pvals;
+			for (auto* node : ctx.selected)
+			{
+				std::vector<std::string_view> pn;
+				auto props = pr ? node->Properties() : node->Events();
+				for (auto& p : props)
+					pn.push_back(p.name);
+				stx::sort(pn);
+				if (node == ctx.selected[0])
+					pnames = std::move(pn);
+				else {
+					std::vector<std::string_view> pres;
+					stx::set_intersection(pnames, pn, std::back_inserter(pres));
+					pnames = std::move(pres);
+				}
+			}
+			//edit first widget
+			auto props = pr ? ctx.selected[0]->Properties() : ctx.selected[0]->Events();
+			std::string_view pname;
+			std::string pval;
+			ImGui::Indent(); //to align TreeNodes in the table
+			for (int i = 0; i < (int)props.size(); ++i)
+			{
+				if (!stx::count(pnames, props[i].name))
+					continue;
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::AlignTextToFramePadding();
+				if (keyPressed && props[i].kbdInput) {
+					addInputCharacter = keyPressed;
+					ImGui::SetKeyboardFocusHere();
+				}
+				bool change = pr ? ctx.selected[0]->PropertyUI(i, ctx) : ctx.selected[0]->EventUI(i, ctx);
+				if (change) {
+					fileTabs[activeTab].modified = true;
+					if (props[i].property) {
+						pname = props[i].name;
+						pval = props[i].property->to_arg();
+					}
+				}
+			}
+			ImGui::Unindent();
+			ImGui::EndTable();
+
+			//copy changes to other widgets
+			for (size_t i = 1; i < ctx.selected.size(); ++i)
+			{
+				auto props = pr ? ctx.selected[i]->Properties() : ctx.selected[i]->Events();
+				for (auto& p : props)
+				{
+					if (p.name == pname) {
+						auto prop = const_cast<property_base*>(p.property);
+						prop->set_from_arg(pval);
+					}
+				}
+			}
+		}
+	}
+
+	void Application::PropertyUI()
+	{
+		bool tmp = false;
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
+		ImGui::Begin("Events");
+		if (!ctx.selected.empty())
+		{
+			PropertyRowsUI(0);
+		}
+		if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows))
+			tmp = true;
+		ImGui::End();
+
+		ImGui::Begin("Properties");
+		if (!ctx.selected.empty())
+		{
+			PropertyRowsUI(1);
+		}
+		if (ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows))
+			tmp = true;
+		ImGui::End();
+		ImGui::PopStyleVar();
+		pgFocused = tmp;
+	}
+
+	void Application::PopupUI()
+	{
+		newFieldPopup.Draw();
+
+		tableColumns.Draw();
+
+		comboDlg.Draw();
+
+		messageBox.Draw();
+
+		classWizard.Draw();
+
+		aboutDlg.Draw();
+
+		bindingDlg.Draw();
+	}
+
+	void Application::Draw()
+	{
+		if (activeTab >= 0 && fileTabs[activeTab].rootNode)
+		{
+			auto tmpStyle = ImGui::GetStyle();
+			switch (styleIdx) {
+				case 0: ImGui::StyleColorsDark(); break;
+				case 1: ImGui::StyleColorsLight(); break;
+				case 2: ImGui::StyleColorsClassic(); break;
+			}
+			ImGui::GetStyle().Colors[ImGuiCol_TitleBg] = ImGui::GetStyle().Colors[ImGuiCol_TitleBgActive];
+
+			fileTabs[activeTab].rootNode->Draw(ctx);
+		
+			ImGui::GetStyle() = tmpStyle;
+		}
+	}
+
+	std::pair<UINode*, size_t> Application::FindParentIndex(UINode* node, const UINode* n)
+	{
+		for (size_t i = 0; i < node->children.size(); ++i)
+		{
+			if (node->children[i].get() == n)
+				return { node, i };
+			auto pi = FindParentIndex(node->children[i].get(), n);
+			if (pi.first)
+				return pi;
+		}
+		return { nullptr, 0 };
+	}
+
+	void Application::Work()
+	{
+		if (ImGui::GetTopMostAndVisiblePopupModal())
+			return;
+
+		if (ctx.snapMode)
+		{
+			if (ImGui::IsKeyPressed(ImGuiKey_Escape))
+			{
+				ctx.snapMode = false;
+				activeButton = "";
+			}
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && 
+				ctx.snapParent)
+			{
+				ctx.selected = { newNode.get() };
+				newNode->sameLine = ctx.snapSameLine;
+				if (newNode->sameLine)
+					newNode->spacing = 1;
+				newNode->nextColumn = ctx.snapNextColumn;
+				newNode->beginGroup = ctx.snapBeginGroup;
+				if (ctx.snapIndex < ctx.snapParent->children.size())
+				{
+					auto& next = ctx.snapParent->children[ctx.snapIndex];
+					if (ctx.snapSetNextSameLine) {
+						next->beginGroup = false; 
+						next->nextColumn = false;
+						next->sameLine = true;
+						next->spacing = std::max((int)next->spacing, 1);
+					}
+					if (next->sameLine)
+						next->indent = 0; //otherwise creates widgets overlaps
+				}
+				ctx.snapParent->children.insert(ctx.snapParent->children.begin() + ctx.snapIndex, std::move(newNode));
+				
+				ctx.snapMode = false;
+				activeButton = "";
+				fileTabs[activeTab].modified = true;
+			}
+		}
+		else if (!ctx.selected.empty())
+		{
+			if (ImGui::IsKeyPressed(ImGuiKey_Delete) && !pgFocused)
+			{
+				fileTabs[activeTab].modified = true;
+				auto pi1 = FindParentIndex(fileTabs[activeTab].rootNode.get(), ctx.selected[0]);
+				for (UINode* node : ctx.selected)
+				{
+					if (node == fileTabs[activeTab].rootNode.get())
+						continue;
+					auto pi = FindParentIndex(fileTabs[activeTab].rootNode.get(), node);
+					if (!pi.first)
+						continue;
+					Widget* wdg = dynamic_cast<Widget*>(node);
+					bool sameLine = wdg->sameLine;
+					bool nextColumn = wdg->nextColumn;
+					bool beginGroup = wdg->beginGroup;
+					pi.first->children.erase(pi.first->children.begin() + pi.second);
+					if (pi.second < pi.first->children.size())
+					{
+						wdg = dynamic_cast<Widget*>(pi.first->children[pi.second].get());
+						if (nextColumn)
+							wdg->nextColumn = true;
+						if (!sameLine)
+							wdg->sameLine = false;
+						if (beginGroup)
+							wdg->beginGroup = true;
+					}
+				}
+				//move selection. Useful for things like menu items
+				if (ctx.selected.size() == 1 && pi1.first)
+				{
+					if (pi1.second < pi1.first->children.size())
+						ctx.selected[0] = pi1.first->children[pi1.second].get();
+					else if (pi1.second)
+						ctx.selected[0] = pi1.first->children[pi1.second - 1].get();
+					else
+						ctx.selected[0] = pi1.first;
+				}
+				else
+				{
+					ctx.selected.clear();
+				}
+			}
+		}
+	}
 	Application::~Application()
 	{
 		Shutdown();
@@ -494,6 +1275,12 @@ namespace AppSystem
 		ImFont *robotoFont = io.Fonts->AddFontFromMemoryTTF((void *)g_RobotoRegular, sizeof(g_RobotoRegular), 20.0f, &fontConfig);
 		io.FontDefault = robotoFont;
 
+		ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_16_FA, 0 };
+		ImFontConfig icons_config; 
+		icons_config.MergeMode = true; 
+		icons_config.PixelSnapH = true;
+		io.Fonts->AddFontFromFileTTF(FONT_ICON_FILE_NAME_FAR, 18.0f, &icons_config, icons_ranges);
+		io.Fonts->AddFontFromFileTTF(FONT_ICON_FILE_NAME_FAS, 18.0f, &icons_config, icons_ranges);
 		// Upload Fonts
 		{
 			// Use any command queue
@@ -564,7 +1351,10 @@ namespace AppSystem
 		ImGui_ImplVulkanH_Window *wd = &g_MainWindowData;
 		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 		ImGuiIO &io = ImGui::GetIO();
-
+		StyleColors();
+		// NewFile();
+		firstTime = true;
+		bool lastVisible = true;
 		// Main loop
 		while (!glfwWindowShouldClose(m_WindowHandle) && m_Running)
 		{
@@ -575,8 +1365,8 @@ namespace AppSystem
 			// Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
 			glfwPollEvents();
 
-			for (auto &layer : m_LayerStack)
-				layer->OnUpdate(m_TimeStep);
+			// for (auto &layer : m_LayerStack)
+				// layer->OnUpdate(m_TimeStep);
 
 			// Resize swap chain?
 			if (g_SwapChainRebuild)
@@ -596,24 +1386,30 @@ namespace AppSystem
 					g_SwapChainRebuild = false;
 				}
 			}
-
+			
 			// Start the Dear ImGui frame
 			ImGui_ImplVulkan_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
-
+			bool visible = glfwGetWindowAttrib(m_WindowHandle, GLFW_FOCUSED);
+			if (visible && !lastVisible)
+				ReloadFiles();
+			lastVisible = visible;
 			{
-				static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+				static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+				// static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
 				// We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
 				// because it would be confusing to have two docking targets within each others.
 				ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking;
-				if (m_MenubarCallback)
-					window_flags |= ImGuiWindowFlags_MenuBar;
+				/*if (m_MenubarCallback)
+					window_flags |= ImGuiWindowFlags_MenuBar;*/
 
 				const ImGuiViewport *viewport = ImGui::GetMainViewport();
-				ImGui::SetNextWindowPos(viewport->WorkPos);
-				ImGui::SetNextWindowSize(viewport->WorkSize);
+				// ImGui::SetNextWindowPos(viewport->WorkPos);
+				ImGui::SetNextWindowPos(viewport->Pos + ImVec2(0, TB_SIZE + 0));
+				// ImGui::SetNextWindowSize(viewport->WorkSize);
+				ImGui::SetNextWindowSize(viewport->Size - ImVec2(0, TB_SIZE + 0));
 				ImGui::SetNextWindowViewport(viewport->ID);
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -623,7 +1419,10 @@ namespace AppSystem
 				// When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background
 				// and handle the pass-thru hole, so we ask Begin() to not render a background.
 				if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+				{
+					dockspace_flags |= ImGuiDockNodeFlags_DockSpace;
 					window_flags |= ImGuiWindowFlags_NoBackground;
+				}
 
 				// Important: note that we proceed even if Begin() returns false (aka window is collapsed).
 				// This is because we want to keep our DockSpace() active. If a DockSpace() is inactive,
@@ -631,36 +1430,62 @@ namespace AppSystem
 				// We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
 				// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-				ImGui::Begin("DockSpace Demo", nullptr, window_flags);
+				ImGui::Begin("DockSpace", nullptr, window_flags);
 				ImGui::PopStyleVar();
 
 				ImGui::PopStyleVar(2);
 
 				// Submit the DockSpace
 				ImGuiIO &io = ImGui::GetIO();
-				if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
-				{
-					ImGuiID dockspace_id = ImGui::GetID("VulkanAppDockspace");
-					ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-				}
+				//if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+				//{
+				ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+				ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode | ImGuiDockNodeFlags_NoDockingInCentralNode);
+				//}
 
-				if (m_MenubarCallback)
+				/*if (m_MenubarCallback)
 				{
 					if (ImGui::BeginMenuBar())
 					{
 						m_MenubarCallback();
 						ImGui::EndMenuBar();
 					}
-				}
+				}*/
 
 				for (auto &layer : m_LayerStack)
 					layer->OnUIRender();
-
+				if (firstTime)
+				{
+					ImGui::DockBuilderRemoveNode(dockspace_id); // clear any previous layout
+					ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_PassthruCentralNode | ImGuiDockNodeFlags_DockSpace);
+					ImGui::DockBuilderSetNodeSize(dockspace_id, viewport->Size);
+					ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Right, 350.f / viewport->Size.x, nullptr, &dockspace_id);
+					ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 300.f / (viewport->Size.x - 350), nullptr, &dockspace_id);
+					ImGuiID dock_id_right1, dock_id_right2;
+					ImGui::DockBuilderSplitNode(dock_id_right, ImGuiDir_Up, 230.f / (viewport->Size.y - TB_SIZE), &dock_id_right1, &dock_id_right2);
+					float vh = viewport->Size.y - TB_SIZE;
+					dock_id_top = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Up, TAB_SIZE / vh, nullptr, &dockspace_id);
+					
+					ImGui::DockBuilderDockWindow("FileTabs", dock_id_top);
+					ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
+					ImGui::DockBuilderDockWindow("Widgets", dock_id_right1);
+					ImGui::DockBuilderDockWindow("Properties", dock_id_right2);
+					ImGui::DockBuilderDockWindow("Events", dock_id_right2);
+					ImGui::DockBuilderFinish(dockspace_id);
+				}
 				ImGui::End();
 			}
-
+			ToolbarUI();
+			TabsUI();
+			HierarchyUI();
+			PropertyUI();
+			PopupUI();
+			Draw();
+			Work();
+			firstTime = false;
 			// Rendering
 			ImGui::Render();
+
 			ImDrawData *main_draw_data = ImGui::GetDrawData();
 			const bool main_is_minimized = (main_draw_data->DisplaySize.x <= 0.0f || main_draw_data->DisplaySize.y <= 0.0f);
 			wd->ClearValue.color.float32[0] = clear_color.x * clear_color.w;
