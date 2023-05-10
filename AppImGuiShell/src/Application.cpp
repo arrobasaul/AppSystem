@@ -15,6 +15,7 @@
 #include <glm/glm.hpp>
 
 #include <iostream>
+#include <algorithm>
 
 // Emedded font
 #include "ImGui/Roboto-Regular.embed"
@@ -850,6 +851,34 @@ namespace AppSystem
 		ImGui::PopStyleVar();
 		ImGui::End();
 	}
+	void Application::ToolbarUIApp()
+	{
+		ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + 0));
+		ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, TB_SIZE));
+		ImGui::SetNextWindowViewport(viewport->ID);
+
+		ImGuiWindowFlags window_flags = 0
+			| ImGuiWindowFlags_NoDocking
+			| ImGuiWindowFlags_NoTitleBar
+			| ImGuiWindowFlags_NoResize
+			| ImGuiWindowFlags_NoMove
+			| ImGuiWindowFlags_NoScrollbar
+			;
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+		ImGui::Begin("TOOLBAR", nullptr, window_flags);
+		ImGui::PopStyleVar();
+
+		const float BTN_SIZE = 30;
+		const auto& io = ImGui::GetIO();
+		if (m_MenubarCallback)
+		{
+			m_MenubarCallback();
+		}
+		ImGui::SameLine();
+		ImGui::End();
+	}
+
 	void Application::TabsUI()
 	{
 		/*ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -921,12 +950,84 @@ namespace AppSystem
 		ImGui::End();
 		ImGui::PopStyleVar();
 	}
+	void Application::TabsUIApp()
+	{
+		
+		
+		ImGuiWindowFlags window_flags = 0
+			//| ImGuiWindowFlags_NoDocking
+			| ImGuiWindowFlags_NoTitleBar
+			| ImGuiWindowFlags_NoResize
+			| ImGuiWindowFlags_NoCollapse
+			| ImGuiWindowFlags_NoMove
+			| ImGuiWindowFlags_NoScrollbar
+			//| ImGuiWindowFlags_NoSavedSettings
+			;
+		/*bool tmp;
+		ImGui::Begin("Moje.cpp", &tmp, window_flags);
+		ImGui::End();
+		ImGui::DockBuilderDockWindow("Tvoje.cpp", dock_id_top);
+		ImGui::Begin("Tvoje.cpp", &tmp, window_flags);
+		ImGui::End();
+		*/
+		ImGuiViewport* viewport = ImGui::GetMainViewport();
+		/*ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + TB_SIZE));
+		ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, TAB_SIZE));
+		ImGui::SetNextWindowViewport(viewport->ID);*/
+		bool notClosed = true;
+		// ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0.0f));
+		ImGuiWindowClass window_class;
+		// window_class.DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar | ImGuiDockNodeFlags_NoResize;
+		ImGui::SetNextWindowClass(&window_class);
+		ImGui::Begin("FileTabs"); // , 0, window_flags);
+		if (ImGui::BeginTabBar(".Tabs")) //, ImGuiTabBarFlags_NoTabListScrollingButtons))
+		{
+			int untitled = 0;
+			for (int i = 0; i < (int)m_LayerStack.size(); ++i)
+			{
+				const auto& tab = m_LayerStack[i];
+				if (ImGui::BeginTabItem("Modulo " + i, &notClosed, i == activeTab ? ImGuiTabItemFlags_SetSelected : 0))
+				{
+					
+					
+					// int fl = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoSavedSettings;
+					
+					// ImGui::Begin("Ventana " + i, &notClosed, fl );
+						tab->OnUIRender();
+					// ImGui::End();
+					ImGui::EndTabItem();
+				}
+
+				if (!i)
+				{
+					
+					//const auto* viewport = ImGui::GetMainViewport();
+					//ctx.wpos = viewport->GetCenter() + ImVec2(min.x, max.y) / 2;
+				}
+			}
+			ImGui::EndTabBar();
+		}
+		ImGui::End();
+		ImGui::PopStyleVar();
+	}
 
 	void Application::HierarchyUI()
 	{
 		ImGui::Begin("Hierarchy");
 		if (activeTab >= 0 && fileTabs[activeTab].rootNode) 
 			fileTabs[activeTab].rootNode->TreeUI(ctx);
+		ImGui::End();
+	}
+	void Application::HierarchyUIApp()
+	{
+		int layercCount = 0;
+		ImGui::Begin("Hierarchy");
+		for (auto& layer : m_LayerStack)
+		{
+			ImGui::Button("Boton" + layercCount);
+			layercCount++;
+		}
+		
 		ImGui::End();
 	}
 
@@ -1018,7 +1119,15 @@ namespace AppSystem
 			}
 		}
 	}
+	void Application::DerechosApp()
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
+		ImGui::Begin("Derechos");
+			ImGui::Text("Derechos reservados");
+		ImGui::End();
 
+		ImGui::PopStyleVar();
+	}
 	void Application::PropertyUI()
 	{
 		bool tmp = false;
@@ -1452,36 +1561,43 @@ namespace AppSystem
 					}
 				}*/
 
-				for (auto &layer : m_LayerStack)
-					layer->OnUIRender();
+				// for (auto &layer : m_LayerStack)
+					// layer->OnUIRender();
 				if (firstTime)
 				{
 					ImGui::DockBuilderRemoveNode(dockspace_id); // clear any previous layout
 					ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_PassthruCentralNode | ImGuiDockNodeFlags_DockSpace);
 					ImGui::DockBuilderSetNodeSize(dockspace_id, viewport->Size);
-					ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Right, 350.f / viewport->Size.x, nullptr, &dockspace_id);
+					// ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Right, 350.f / viewport->Size.x, nullptr, &dockspace_id);
+					// ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 300.f / (viewport->Size.x - 350), nullptr, &dockspace_id);
 					ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 300.f / (viewport->Size.x - 350), nullptr, &dockspace_id);
-					ImGuiID dock_id_right1, dock_id_right2;
-					ImGui::DockBuilderSplitNode(dock_id_right, ImGuiDir_Up, 230.f / (viewport->Size.y - TB_SIZE), &dock_id_right1, &dock_id_right2);
+					// ImGuiID dock_id_right1, dock_id_right2;
+					// ImGui::DockBuilderSplitNode(dock_id_right, ImGuiDir_Up, 230.f / (viewport->Size.y - TB_SIZE), &dock_id_right1, &dock_id_right2);
 					float vh = viewport->Size.y - TB_SIZE;
-					dock_id_top = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Up, TAB_SIZE / vh, nullptr, &dockspace_id);
-					
+					dock_id_top = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Up, viewport->Size.x, nullptr, &dockspace_id);
+					// ImGuiID dock_id_down;
+					// dock_id_down = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Down, viewport->Size.x, nullptr, &dockspace_id);
 					ImGui::DockBuilderDockWindow("FileTabs", dock_id_top);
 					ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
-					ImGui::DockBuilderDockWindow("Widgets", dock_id_right1);
-					ImGui::DockBuilderDockWindow("Properties", dock_id_right2);
-					ImGui::DockBuilderDockWindow("Events", dock_id_right2);
+					// ImGui::DockBuilderDockWindow("Widgets", dock_id_right1);
+					// ImGui::DockBuilderDockWindow("Properties", dock_id_right2);
+					// ImGui::DockBuilderDockWindow("Events", dock_id_right2);
+					// ImGui::DockBuilderDockWindow("Derechos", dock_id_down);
 					ImGui::DockBuilderFinish(dockspace_id);
 				}
 				ImGui::End();
 			}
-			ToolbarUI();
-			TabsUI();
-			HierarchyUI();
-			PropertyUI();
-			PopupUI();
-			Draw();
-			Work();
+			// ToolbarUI();
+			ToolbarUIApp();
+			// TabsUI();
+			TabsUIApp();
+			// HierarchyUI();
+			HierarchyUIApp();
+			// DerechosApp();
+			// PropertyUI();
+			// PopupUI();
+			// Draw();
+			// Work();
 			firstTime = false;
 			// Rendering
 			ImGui::Render();

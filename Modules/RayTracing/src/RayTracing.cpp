@@ -87,15 +87,15 @@ public:
   bool isEnabled() { return enabled; }
 
   virtual void OnUIRender() override {
-    ImGui::Begin("Hello from RayTraicing");
+    // ImGui::Begin("Hello from RayTraicing");
     static char _host[128];
     static char _port[128];
     static char _target[128];
     static char _version[128];
-    ImGui::InputText("Host", _host, IM_ARRAYSIZE(_host));
-    ImGui::InputText("Port", _port, IM_ARRAYSIZE(_port));
-    ImGui::InputText("Target", _target, IM_ARRAYSIZE(_target));
-    ImGui::InputText("Version", _version, IM_ARRAYSIZE(_version));
+    ImGui::InputText("Host 2", _host, IM_ARRAYSIZE(_host));
+    ImGui::InputText("Port 2", _port, IM_ARRAYSIZE(_port));
+    ImGui::InputText("Target 2", _target, IM_ARRAYSIZE(_target));
+    ImGui::InputText("Version 2", _version, IM_ARRAYSIZE(_version));
 
     if (ImGui::Button("Save")) {
       auto const host = _host;
@@ -122,7 +122,7 @@ public:
       //                                  { ioc.run(); });
 */
     }
-    ImGui::End();
+    // ImGui::End();
     /*ImGui::Begin("Hello video");
       Mat img;
       VideoCapture capturador(0);

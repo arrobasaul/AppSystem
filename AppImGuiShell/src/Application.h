@@ -92,16 +92,20 @@ private:
   void OpenFile();
   void DoOpenFile(const std::string& path);
   void ToolbarUI();
+  void ToolbarUIApp();
   void NewFile();
   void ActivateTab(int i);
 
   void Work();
   void TabsUI();
+  void TabsUIApp();
   void HierarchyUI();
+  void HierarchyUIApp();
   void PropertyRowsUI(bool pr);
   void PropertyUI();
   void PopupUI();
   void Draw();
+  void DerechosApp();
   std::pair<UINode*, size_t> FindParentIndex(UINode* node, const UINode* n);
 
 private:

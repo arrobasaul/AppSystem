@@ -87,7 +87,7 @@ public:
   bool isEnabled() { return enabled; }
 
   virtual void OnUIRender() override {
-    ImGui::Begin("Hello from TestVisualService");
+    // ImGui::Begin("Hello from TestVisualService");
     static char _host[128];
     static char _port[128];
     static char _target[128];
@@ -102,7 +102,7 @@ public:
       auto const port = _port;
       auto const target = _target;
     }
-    ImGui::End();
+    // ImGui::End();
   }
   
 private:
