@@ -3,7 +3,7 @@
 #include "Image.h"
 #include "ServiceManager/ServiceManager.h"
 #include <dirent.h>
-#include <dlfcn.h>
+//#include <dlfcn.h>
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -104,7 +104,7 @@ AppSystem::Application *AppSystem::CreateApplication(int argc, char **argv) {
   auto lay = layers.createInstance("Network");*/
   // std::shared_ptr<Layer> l(lay);
   //  app->PushLayer(l);
-  ServiceManager s;
+  ServiceManager s(ImGui::GetCurrentContext());
   ///ServicePool p(s.applicationContext->servicePool);
   std::vector<std::shared_ptr<AppSystem::VisualService>> ins = s.applicationContext->servicePool->getServices<AppSystem::VisualService>();
    

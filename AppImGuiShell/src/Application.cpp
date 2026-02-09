@@ -522,9 +522,9 @@ namespace AppSystem
 	void Application::OpenFile()
 	{
 		nfdchar_t *outPath = NULL;
-		nfdresult_t result = NFD_OpenDialog("h", NULL, &outPath);
-		if (result != NFD_OKAY)
-			return;
+		// nfdresult_t result = NFD_OpenDialog("h", NULL, &outPath);
+		//if (result != NFD_OKAY)
+		//	return;
 		
 		ctx.snapMode = false;
 		ctx.selected.clear();
@@ -616,12 +616,12 @@ namespace AppSystem
 		bool trunc = false;
 		if (tab.fname == "") {
 			nfdchar_t *outPath = NULL;
-			nfdresult_t result = NFD_SaveDialog("h", NULL, &outPath);
+			/*nfdresult_t result = NFD_SaveDialog("h", NULL, &outPath);
 			if (result != NFD_OKAY) {
 				if (thenClose)
 					DoCloseFile();
 				return;
-			}
+			}*/
 			tab.fname = outPath;
 			if (!fs::path(tab.fname).has_extension())
 				tab.fname += ".h";
@@ -680,7 +680,7 @@ namespace AppSystem
 		}
 		fout.close();
 	#ifdef WIN32
-		ShellExecute(NULL, "open", path.c_str(), NULL, NULL, SW_SHOWNORMAL);
+		//ShellExecute(NULL, "open", path.c_str(), NULL, NULL, SW_SHOWNORMAL);
 	#else
 		system(("xdg-open " + path).c_str());
 	#endif
@@ -992,9 +992,9 @@ namespace AppSystem
 					
 					// int fl = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoSavedSettings;
 					
-					// ImGui::Begin("Ventana " + i, &notClosed, fl );
+					//ImGui::Begin("Ventana " + i, &notClosed );
 						tab->OnUIRender();
-					// ImGui::End();
+					//ImGui::End();
 					ImGui::EndTabItem();
 				}
 
@@ -1008,7 +1008,7 @@ namespace AppSystem
 			ImGui::EndTabBar();
 		}
 		ImGui::End();
-		ImGui::PopStyleVar();
+		//ImGui::PopStyleVar();
 	}
 
 	void Application::HierarchyUI()

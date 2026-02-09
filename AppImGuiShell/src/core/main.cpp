@@ -1,7 +1,7 @@
 #include "FirstApp.hpp"
 #include "ServiceManager/ServiceManager.h"
 #include <dirent.h>
-#include <dlfcn.h>
+//#include <dlfcn.h>
 #include <iostream>
 // std
 #include <cstdlib>

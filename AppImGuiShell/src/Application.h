@@ -18,7 +18,7 @@
 //new Gui
 #include "nfd.h"
 #include "nfd_common.h"
-#include "node.h"
+//#include "node.h"
 #include "cppgen.h"
 #include "utils.h"
 #include "ui_new_field.h"
@@ -107,7 +107,6 @@ private:
   void Draw();
   void DerechosApp();
   std::pair<UINode*, size_t> FindParentIndex(UINode* node, const UINode* n);
-
 private:
   ApplicationSpecification m_Specification;
   GLFWwindow *m_WindowHandle = nullptr;

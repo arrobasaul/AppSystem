@@ -3,6 +3,7 @@ include_directories(${CMAKE_SOURCE_DIR}/AppImGuiCore/src)
 include_directories(${CMAKE_SOURCE_DIR}/MContracts/include)
 include_directories(${CMAKE_SOURCE_DIR}/MContracts/src)
 include_directories(${CMAKE_SOURCE_DIR}/vendor/spdlog/include)
+include_directories(${CMAKE_SOURCE_DIR}/vendor/ImGui)
 
 add_library(AppImGuiCore 
     src/ServiceManager/ApplicationContext.cpp

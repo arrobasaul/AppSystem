@@ -8,11 +8,12 @@ namespace AppSystem
 	{
 	public:
         ApplicationContext()= default;
-        ApplicationContext(std::shared_ptr<ServicePool> servicePool, std::shared_ptr<MessageBroker> messageBroker);
+        ApplicationContext(std::shared_ptr<ServicePool> servicePool, std::shared_ptr<MessageBroker> messageBroker, void* context);
 
 		virtual ~ApplicationContext() = default;
         std::shared_ptr<ServicePool> servicePool;
         std::shared_ptr<MessageBroker> messageBroker;
+        void* context;
 	};
 
 }

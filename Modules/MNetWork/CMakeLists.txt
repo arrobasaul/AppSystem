@@ -8,7 +8,7 @@ add_library(MNetwork SHARED include/MNetwork.h src/MNetwork.cpp src/CoreRuntime.
 include_directories(${CMAKE_SOURCE_DIR}/MContracts/src)
 include_directories(${CMAKE_SOURCE_DIR}/App.GuiFront/include)
 include_directories(${CMAKE_SOURCE_DIR}/vendor/glm)
-target_link_libraries(MNetwork MContracts)
+target_link_libraries(MNetwork MContracts App.GuiFront)
 install(TARGETS MNetwork
     LIBRARY DESTINATION bin/modules
     ARCHIVE DESTINATION bin/modules)

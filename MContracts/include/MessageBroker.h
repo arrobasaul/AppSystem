@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../src/eventpp/Bus.h"
+#include <string>
 
 
 namespace AppSystem

@@ -1,6 +1,6 @@
 #pragma once
 #include "Base.h"
-#include "imgui.h"
+#include <imgui.h>
 #include <cstdlib>  /* Aquí contiene la función system("pause"); */
 #include <iostream> /* Importamos esta librería para hacer uso de cout y así ver el resultado en pantalla. */
 #include <memory>
@@ -11,7 +11,7 @@
 #include "ioc.h"
 #include "MNetwork.h"
 #include "VisualService/VisualService.h"
-#include <irrKlang.h>
+//#include <irrKlang.h>
 #include "ApplicationContext.h"
 /*
 #include <opencv2/imgcodecs.hpp>
@@ -20,7 +20,7 @@
 #include <opencv2/dnn.hpp>
 
 #include <opencv2/opencv.hpp>*/
-using namespace irrklang;
+
 //------------------------------------------------------------------------------
 // using namespace cv;
 // using namespace cv::dnn;
@@ -68,11 +68,11 @@ public:
       // delete engine
     //}// gui::menu.registerEntry(name, menuHandler, this, NULL);
   }
-  ISoundEngine* engine = createIrrKlangDevice();
+  //ISoundEngine* engine = createIrrKlangDevice();
 
   ~RayTracing() {
     // gui::menu.removeEntry(name);
-    engine->drop(); 
+    //engine->drop(); 
   }
   
   void postInit() {}
@@ -81,7 +81,9 @@ public:
 
   void disable() { enabled = false; }
 
-  void OnAttach(std::shared_ptr<AppSystem::ApplicationContext> applicationContext) {}
+  void OnAttach(std::shared_ptr<AppSystem::ApplicationContext> applicationContext) {
+    ImGui::SetCurrentContext((ImGuiContext*)applicationContext->context);
+  }
   void OnDetach() {}
   void OnUpdate(float ts) {}
   bool isEnabled() { return enabled; }

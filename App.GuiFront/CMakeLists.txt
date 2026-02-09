@@ -42,8 +42,8 @@ configure_file(${CMAKE_SOURCE_DIR}/vendor/stb/stb_image.h ${CMAKE_SOURCE_DIR}/Ap
 
 file(GLOB sources include/*.cpp include/*.h)
 #set(STB ${CMAKE_SOURCE_DIR}/vendor/stb/stb_image.h)
-
-
+find_package(Vulkan REQUIRED )
+include_directories(${Vulkan_INCLUDE_DIRS})
 add_library(App.GuiFront include/imconfig.h include/IconsFontAwesome6.h ${sources}
 #src/imgui_impl_glfw.cpp
 #src/imgui_impl_vulkan.cpp
@@ -57,7 +57,7 @@ add_library(App.GuiFront include/imconfig.h include/IconsFontAwesome6.h ${source
 #src/stb_image.h
 #imgui_demo.cpp
 )
-target_link_libraries(App.GuiFront glm nativefiledialog)
+target_link_libraries(App.GuiFront glm ${Vulkan_LIBRARIES})
 
 install(TARGETS App.GuiFront
     LIBRARY DESTINATION lib

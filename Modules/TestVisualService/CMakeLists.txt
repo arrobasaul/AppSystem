@@ -13,7 +13,7 @@ include_directories(${CMAKE_SOURCE_DIR}/Modules/MNetWork/include)
 #add_library( IrrKlang SHARED IMPORTED GLOBAL)
 #set_target_properties( IrrKlang PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/vendor/irrKlang/bin/linux-gcc-64/libIrrKlang.so )
 
-target_link_libraries(TestVisualService MContracts IrrKlang)
+target_link_libraries(TestVisualService MContracts App.GuiFront)
 install(TARGETS TestVisualService
     LIBRARY DESTINATION bin/modules
     ARCHIVE DESTINATION bin/modules)

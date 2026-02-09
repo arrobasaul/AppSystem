@@ -1,6 +1,6 @@
 #pragma once
 #include "Base.h"
-#include "imgui.h"
+#include <imgui.h>
 #include <cstdlib>  /* Aquí contiene la función system("pause"); */
 #include <iostream> /* Importamos esta librería para hacer uso de cout y así ver el resultado en pantalla. */
 #include <memory>
@@ -14,8 +14,6 @@
 #include "ApplicationContext.h"
 #include "MNetwork.h"
 //#include "MNetwork.cpp"
-#include <irrKlang.h>
-using namespace irrklang;
 //------------------------------------------------------------------------------
 
 #ifndef _WIN32
@@ -44,25 +42,11 @@ public:
   TestVisualService(std::string name) {
     this->name = name;
     
-
-    if (!engine)
-      printf("error starting up the engine\n");
-      //return 0; // error starting up the engine
-    else {
-    // play some sound stream, looped
-      engine->play2D("getout.ogg", true);
-
-      char i = 0;
-      //std::cin >> i; // wait for user to press some key
-
-      // delete engine
-    }// gui::menu.registerEntry(name, menuHandler, this, NULL);
   }
-  ISoundEngine* engine = createIrrKlangDevice();
 
   ~TestVisualService() {
     // gui::menu.removeEntry(name);
-    engine->drop(); 
+    //engine->drop(); 
   }
   
   void postInit() {}
@@ -81,6 +65,8 @@ public:
     //auto net3 = applicationContext->servicePool->getSingleServiceByName<VisualService>("RayTracing");
   
     //net->sayHello();
+    ImGui::SetCurrentContext((ImGuiContext*)applicationContext->context);
+
   }
   void OnDetach() {}
   void OnUpdate(float ts) {}

@@ -18,6 +18,7 @@
 #include "Service.h"
 #include <memory>
 #include "ApplicationContext.h"
+#include "imgui.h"
 //#include "MessageBroker.h"
 namespace AppSystem
 {
@@ -60,7 +61,7 @@ namespace AppSystem
         std::vector<std::shared_ptr<VisualService>> visual;
         spdlog::logger createLog();
 
-        ServiceManager(/* args */);
+        ServiceManager(ImGuiContext* context);
         ~ServiceManager() = default;
     };
 

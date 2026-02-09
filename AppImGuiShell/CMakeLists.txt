@@ -20,18 +20,20 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DVK_PROTOTYPES")
 
 # add_compile_options(-Wall -Wextra -Wpedantic -fpermissive)
 # Libraries
-set (Vulkan_DIR bin/debug)
 find_package(Vulkan REQUIRED )
 #find_package( OpenCV REQUIRED )
-FIND_PACKAGE(PkgConfig REQUIRED)
-PKG_CHECK_MODULES(GTK REQUIRED gtkmm-3.0)
+#FIND_PACKAGE(PkgConfig REQUIRED)
+#PKG_CHECK_MODULES(GTK REQUIRED gtkmm-3.0)
 #find_library(VULKAN_LIBRARY
 #NAMES vulkan vulkan-1)
 #set(LIBRARIES "glfw;${VULKAN_LIBRARY}")
 set(LIBRARIES "Vulkan::Vulkan" )
 message(STATUS "Vulkan: ${Vulkan_FOUND}")
-# Use vulkan headers from glfw:
+message(STATUS "DIRS: ${Vulkan_INCLUDE_DIRS}")
+message(STATUS "LIB: ${Vulkan_LIBRARIES}")
 
+# Use vulkan headers from glfw:
+include_directories(${Vulkan_INCLUDE_DIRS})
 add_executable(AppImGuiShell ${sources} src/AppImGuiShell.cpp src/Application.cpp src/Input/Input.cpp src/Image.cpp src/Random.h src/Timer.h src/Image.h src/Input/KeyCodes.h)
 
 #include_directories( ${OpenCV_INCLUDE_DIRS})
@@ -39,18 +41,15 @@ target_include_directories(AppImGuiShell
 PUBLIC vendor/glfw/deps
 PUBLIC vendor/glfw/include
 PUBLIC ${PROJECT_BINARY_DIR}
-#PUBLIC ${OpenCV_INCLUDE_DIRS}
-PUBLIC ${GTK_INCLUDE_DIRS}
 )
 
 target_link_directories(AppImGuiShell 
 PRIVATE ${CMAKE_SOURCE_DIR}/out/release/vendor/glfw/src
-RPIVATE ${GTK_LIBRARY_DIRS}
 )
-target_link_libraries(AppImGuiShell AppImGuiCore App.GuiFront glfw glm IrrKlang ${LIBRARIES} ${GTK_LIBRARIES}) #${OpenCV_LIBS}
+target_link_libraries(AppImGuiShell AppImGuiCore App.GuiFront glfw glm ${Vulkan_LIBRARIES} ) #${OpenCV_LIBS}
 
-add_library( IrrKlang SHARED IMPORTED GLOBAL)
-set_target_properties( IrrKlang PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/vendor/irrKlang/bin/linux-gcc-64/libIrrKlang.so )
+#add_library( IrrKlang SHARED IMPORTED GLOBAL)
+#set_target_properties( IrrKlang PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/vendor/irrKlang/bin/linux-gcc-64/libIrrKlang.so )
 
 target_compile_definitions(AppImGuiShell PUBLIC -DImTextureID=ImU64)
 install(TARGETS AppImGuiShell RUNTIME DESTINATION bin)
@@ -60,19 +59,19 @@ add_custom_command(TARGET AppImGuiShell POST_BUILD        # Adds a post-build ev
     COMMAND ${CMAKE_COMMAND} -E # Create a working directory. 
         make_directory ${dist_gem_name}
     COMMAND ${CMAKE_COMMAND} -E 
-        copy_if_different ${CMAKE_SOURCE_DIR}/out/build/Modules/MNetWork/libMNetwork.so ${dist_gem_name} 
+        copy_if_different ${CMAKE_SOURCE_DIR}/build/Modules/MNetWork/libMNetwork.dll ${dist_gem_name} 
 )
 add_custom_command(TARGET AppImGuiShell POST_BUILD        # Adds a post-build event to MyTest
     COMMAND ${CMAKE_COMMAND} -E # Create a working directory. 
         make_directory ${dist_gem_name}
     COMMAND ${CMAKE_COMMAND} -E 
-        copy_if_different ${CMAKE_SOURCE_DIR}/out/build/Modules/RayTracing/libRayTracing.so ${dist_gem_name} 
+        copy_if_different ${CMAKE_SOURCE_DIR}/build/Modules/RayTracing/libRayTracing.dll ${dist_gem_name} 
 )
 add_custom_command(TARGET AppImGuiShell POST_BUILD        # Adds a post-build event to MyTest
     COMMAND ${CMAKE_COMMAND} -E # Create a working directory. 
         make_directory ${dist_gem_name}
     COMMAND ${CMAKE_COMMAND} -E 
-        copy_if_different ${CMAKE_SOURCE_DIR}/out/build/Modules/TestVisualService/libTestVisualService.so ${dist_gem_name} 
+        copy_if_different ${CMAKE_SOURCE_DIR}/build/Modules/TestVisualService/libTestVisualService.dll ${dist_gem_name} 
 )
 add_custom_command(TARGET AppImGuiShell POST_BUILD        # Adds a post-build event to MyTest
     COMMAND ${CMAKE_COMMAND} -E 

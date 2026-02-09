@@ -52,13 +52,13 @@ public:
         mod.handle = LoadLibraryA(path.c_str());
         if (mod.handle == NULL)
         {
-            _loggererror("Couldn't load {0}. Error code: {1}", path, GetLastError());
+            _logger.error("Couldn't load {0}. Error code: {1}", path, GetLastError());
             mod.handle = NULL;
             return mod;
         }
         mod.info = (AppSystem::ServiceInfo_t *)GetProcAddress(mod.handle, "_INFO_");
-        mod.init = (void (*)())GetProcAddress(mod.handle, "_INIT_");
-        mod.createInstance = (AppSystem::Service * (*)(std::string)) GetProcAddress(mod.handle, "_CREATE_INSTANCE_");
+        mod.init = (void (*)(AppSystem::ioc::container* container))GetProcAddress(mod.handle, "_INIT_");
+        mod.createInstance = (AppSystem::Service * (*)()) GetProcAddress(mod.handle, "_CREATE_INSTANCE_");
         mod.deleteInstance = (void (*)(AppSystem::Service *))GetProcAddress(mod.handle, "_DELETE_INSTANCE_");
         mod.end = (void (*)())GetProcAddress(mod.handle, "_END_");
 #else
@@ -298,7 +298,7 @@ public:
             //inst.instance->postInit();
         }
     }
-    ServiceManager::ServiceManager()
+    ServiceManager::ServiceManager(ImGuiContext* context)
     : _logger(createLog()), _container()
     {
         //_container->RegisterInstance<IAmAThing,TheThing>();
@@ -336,7 +336,7 @@ public:
 
         servicePool = std::make_shared<ServicePool>(Container);
         messageBroker = std::make_shared<MessageBroker>(_bus);
-        applicationContext = std::make_shared<ApplicationContext>(servicePool,messageBroker);
+        applicationContext = std::make_shared<ApplicationContext>(servicePool,messageBroker, context);
         /*for(auto valor : Container->resolve_by_type<Service>()){
             visual.push_back(std::shared_ptr<VisualService>(reinterpret_cast<VisualService *>( valor->create_item())));
         }*/
